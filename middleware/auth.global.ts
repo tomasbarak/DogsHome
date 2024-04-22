@@ -30,6 +30,7 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
                 'Authorization': `${sessionCookie.value}`
             }
         })
+
     } catch (e) {
         console.log('error', e)
     }

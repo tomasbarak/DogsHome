@@ -1,22 +1,23 @@
-import { signInWithEmailAndPassword, createUserWithEmailAndPassword, User } from "firebase/auth";
+import { signInWithEmailAndPassword, createUserWithEmailAndPassword } from "firebase/auth";
+import type { User } from "firebase/auth";
 
 export default function() {
     const { $auth } = useNuxtApp();
 
     const user = useState<User | null>("fb_user", () => null);
 
-    const registerUser = async (email: string, password: string): Promise<boolean> => {
+    const registerUser = async (email: string, password: string): Promise<any> => {
         try {
             const userCreds = await createUserWithEmailAndPassword($auth, email, password);
             if ( userCreds ) {
                 user.value = userCreds.user;
-                return true;
+                return {success: true, user: userCreds.user};
             }
         } catch (error) {
             console.log(error);
-            return false;
+            return {success: false, error: error}
         }
-        return false;
+        return {success: false, error: "Unknown error"}
     }
 
     const loginUser = async (email: string, password: string): Promise<any> => {

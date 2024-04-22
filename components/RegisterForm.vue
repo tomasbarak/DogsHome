@@ -1,5 +1,5 @@
 <script setup lang="ts">
-    const { user, loginUser } = useFirebaseAuth()
+    const { user, registerUser } = useFirebaseAuth()
     const { swalAuthError } = useSwal() 
     const credentials = reactive({
         email: '',
@@ -113,14 +113,21 @@
         }
     } 
 
-    const handleLogin = async () => {
+    const handleRegister = async () => {
+
+        if (credentials.password != credentials.repeatPassword) {
+            swalAuthError('Las contraseñas no coinciden')
+            return
+        }
+
+
         showLoading(true)
 
-        const loginSuccessful = await loginUser(credentials.email, credentials.password)
-        console.log("login successful: ", loginSuccessful)
+        const registerSuccessful = await registerUser(credentials.email, credentials.password)
+        console.log("login successful: ", registerSuccessful)
 
-        if(loginSuccessful.success == false) {
-            const errorCode: string = loginSuccessful.error.code || 'unknown'
+        if(registerSuccessful.success == false) {
+            const errorCode: string = registerSuccessful.error.code || 'unknown'
             const errorMsg: string = errorCode == 'auth/invalid-email' ? 'El correo no es válido' : errorCode == "auth/missing-password" ? "Ingrese una contraseña" : errorCode == 'auth/user-not-found' ? 'El correo o la contraseña son incorrectos' : errorCode == 'auth/wrong-password' ? 'El correo o la contraseña son incorrectos' : 'Ha ocurrido un error'
             showLoading(false)
             swalAuthError(errorMsg)
@@ -128,18 +135,11 @@
         }
 
         const idToken = await user.value?.getIdToken();
-        const {data: responseData} = await useFetch(`https://api.${window.location.hostname}/auth/login`, {
-            method: 'POST',
-            body: {
-                idToken: idToken,
-                subscription: null
-            },
-            credentials: 'include',
-            
-        })
         
+        useAuthStore().updateUser(user.value?.email!, user.value?.emailVerified!, user.value?.displayName!, user.value?.photoURL!, user.value?.uid!);
+
         //Redirect to home page
-        window.location.href = '/'
+        window.location.href = '/home'
     }
 
     const validateRule = (ruleName: string) => {
@@ -168,7 +168,7 @@
         textRule!.classList.add('text-[#d3d3d3]')
     }
 
-    const handlePasswordInputTEST = (event: any) => {
+    const handlePasswordInput = (event: any) => {
         const ruleNames = [
             "eight-chars",
             "upper-lower",
@@ -294,7 +294,7 @@
                     <span class="text-[12pt] p-0 text-left text-black">Contraseña:</span>
                 </div>
                 
-                <PasswordInput  placeholder="Contraseña" type="password" v-model="credentials.password" @input="handlePasswordInputTEST"/>
+                <PasswordInput  placeholder="Contraseña" type="password" v-model="credentials.password" @input="handlePasswordInput"/>
 
                 <div class="w-[calc(100%+20px)] flex flex-col mt-[25px]">
                     <div class="w-full flex flex-row items-center justify-center">
@@ -337,7 +337,7 @@
 
             <div class="mb-[15px] mt-[15px] flex flex-row items-center justify-between w-[75w] md:w-[50vw] max-w-[350px]">
                 <a class="cursor-pointer text-[1em] text-center text-primary mr-[15px] underline" @click="useState('authMethod').value = 'login'">¿Ya tenés cuenta? Iniciá sesión</a>
-                <button class="h-[50px] w-[100px] border-0 bg-primary rounded-[5px] text-[#fff] flex items-center justify-center text-[10pt] mb-[8px] text-center" @click="handleLogin">Siguiente</button>
+                <button class="h-[50px] w-[100px] border-0 bg-primary rounded-[5px] text-[#fff] flex items-center justify-center text-[10pt] mb-[8px] text-center" @click="handleRegister">Siguiente</button>
             </div>
             
             <a href="/" class="h-[50px] text-black/[0.45] text-[10pt] flex flex-col justify-center">Continuar de forma anónima</a>

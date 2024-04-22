@@ -1,4 +1,5 @@
 <script setup lang="ts">
+    import { useAuthStore } from '@/stores/authStore'
     const { user, loginUser } = useFirebaseAuth()
     const { swalAuthError } = useSwal() 
     const credentials = reactive({
@@ -41,9 +42,14 @@
             credentials: 'include',
             
         })
+
+        console.log(user.value?.email)
+
+        useAuthStore().updateUser(user.value?.email!, user.value?.emailVerified!, user.value?.displayName!, user.value?.photoURL!, user.value?.uid!);
         
+        console.log(useAuthStore().user)
         //Redirect to home page
-        window.location.href = '/'
+        // window.location.href = '/home'
     }
 </script>
 

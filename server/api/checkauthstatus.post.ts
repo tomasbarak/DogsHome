@@ -6,8 +6,7 @@ export default defineEventHandler( async ( event ) => {
     const app = useFirebaseAdmin();
 
     try {
-        const claim = await getAuth(app).verifySessionCookie(sessionCookie);
-        
+        const claim = await getAuth(app).verifySessionCookie(sessionCookie, false);
         return {statusCode: 200, claim: claim}
 
     } catch (error) {

@@ -1,5 +1,9 @@
 <script setup lang="ts">
-    
+    import { useAuthStore } from '@/stores/authStore'
+
+    const user = toRaw(useAuthStore().user)
+
+    console.log(user)
 </script>
 
 <template>
@@ -24,7 +28,7 @@
         <div class="navbar-end">
             <div class="avatar">
                 <div class="w-[40px] h-[40px] rounded-full">
-                    <img src="/images/default-private-user-image.png" alt="">
+                    <img src="/images/default-private-user-image.png" alt="" v-if="user.picture == null || String(user.picture).length == 0">
                 </div>
             </div>
         </div>

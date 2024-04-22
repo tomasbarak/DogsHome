@@ -18,7 +18,7 @@ export default defineNuxtConfig({
     preload: false,
     download: true,
     base64: false
-  }]],
+  }], '@pinia/nuxt', '@pinia-plugin-persistedstate/nuxt'],
   plugins: [
     {src: '~/plugins/firebase.client.ts', mode: 'client'},
   ],
