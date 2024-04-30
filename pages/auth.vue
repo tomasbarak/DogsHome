@@ -3,7 +3,8 @@
     const authMethod = useState('authMethod')
 
     //Set auth method to login by default
-    authMethod.value = 'register'
+    authMethod.value = 'login'
+
 </script>
 
 <style scoped>
@@ -26,7 +27,6 @@
     <Head>
         <Title v-if="useState('authMethod').value === 'login'">Iniciar sesión</Title>
         <Title v-else>Crear cuenta</Title>
-        <Link rel="icon" href="/images/DogsHomeLogo-ReDesign (Colorified&Final).png"></Link>
     </Head>
 
     <div class="flex flex-row h-full items-center justify-start">

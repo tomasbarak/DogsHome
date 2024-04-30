@@ -1,6 +1,10 @@
 <script setup lang="ts">
     const isAuth = useState('isAuth')
     const user = useState('user')
+
+    useHead({
+        title: 'Inicio | DogsHome',
+    })
 </script>
 
 <template>

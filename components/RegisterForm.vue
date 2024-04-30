@@ -136,7 +136,7 @@
 
         const idToken = await user.value?.getIdToken();
         
-        useAuthStore().updateUser(user.value?.email!, user.value?.emailVerified!, user.value?.displayName!, user.value?.photoURL!, user.value?.uid!);
+        useAuthStore().updateUser(user.value?.email!, user.value?.emailVerified!, user.value?.displayName!, user.value?.photoURL!, user.value?.uid!, true);
 
         //Redirect to home page
         window.location.href = '/home'

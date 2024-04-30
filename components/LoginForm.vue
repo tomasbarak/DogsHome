@@ -2,11 +2,11 @@
     import { useAuthStore } from '@/stores/authStore'
     const { user, loginUser } = useFirebaseAuth()
     const { swalAuthError } = useSwal() 
+    const config = useRuntimeConfig()
     const credentials = reactive({
         email: '',
         password: ''
     })
-
     const showLoading = (show: boolean) => {
         const loadingElem = document.querySelector('#loading')
         if(show) {
@@ -33,7 +33,7 @@
         }
 
         const idToken = await user.value?.getIdToken();
-        const {data: responseData} = await useFetch(`https://api.${window.location.hostname}/auth/login`, {
+        const {data: responseData} = await useFetch(`${config.public.dev.apiUrl}/auth/login`, {
             method: 'POST',
             body: {
                 idToken: idToken,
@@ -45,11 +45,11 @@
 
         console.log(user.value?.email)
 
-        useAuthStore().updateUser(user.value?.email!, user.value?.emailVerified!, user.value?.displayName!, user.value?.photoURL!, user.value?.uid!);
+        useAuthStore().updateUser(user.value?.email!, user.value?.emailVerified!, user.value?.displayName!, user.value?.photoURL!, user.value?.uid!, true);
         
         console.log(useAuthStore().user)
         //Redirect to home page
-        // window.location.href = '/home'
+        window.location.href = '/home'
     }
 </script>
 
