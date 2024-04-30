@@ -1,5 +1,4 @@
 <script setup lang="ts">
-    import { useAuthStore } from '@/stores/authStore'
     const { user, loginUser } = useFirebaseAuth()
     const { swalAuthError } = useSwal() 
     const config = useRuntimeConfig()
@@ -45,11 +44,8 @@
 
         console.log(user.value?.email)
 
-        useAuthStore().updateUser(user.value?.email!, user.value?.emailVerified!, user.value?.displayName!, user.value?.photoURL!, user.value?.uid!, true);
-        
-        console.log(useAuthStore().user)
         //Redirect to home page
-        window.location.href = '/home'
+        navigateTo('/home')
     }
 </script>
 
@@ -100,6 +96,6 @@
                 <button class="h-[50px] w-[100px] border-0 bg-primary rounded-[5px] text-[#fff] flex items-center justify-center text-[10pt] mb-[8px] text-center" @click="handleLogin">Iniciar sesión</button>
             </div>
             
-            <a href="/" class="h-[50px] text-black/[0.45] text-[10pt] flex flex-col justify-center">Continuar de forma anónima</a>
+            <a class="h-[50px] text-black/[0.45] text-[10pt] flex flex-col justify-center cursor-pointer" @click="navigateTo('/home')">Continuar de forma anónima</a>
         </div>
 </template>

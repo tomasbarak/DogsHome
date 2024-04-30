@@ -1,6 +1,6 @@
 export default defineNuxtRouteMiddleware(async (to, from) => {
     // process.env['NODE_TLS_REJECT_UNAUTHORIZED'] = "0"
-
+    console.log("middleware auth.global.ts")
     const ignoreRoutes = [
         '/profile/image', '/profile/image/'
     ]
@@ -8,10 +8,13 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
     if(ignoreRoutes.includes(to.path)) return
     if(process.client) return
 
-
+    console.log('middleware auth.global.ts', to.path)
 
     const currentHostName =  useNuxtApp().ssrContext?.event.node.req.headers.host
     const sessionCookie = useCookie('session');
+    const runtimeConfig = useRuntimeConfig()
+
+    console.log(sessionCookie.value)
 
     if(!sessionCookie.value) return;
 
@@ -24,7 +27,7 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
             body: JSON.stringify({sessionCookie: sessionCookie.value})
         })
 
-        profileRes = await fetch(`https://api.${currentHostName}/user/profile`, {
+        profileRes = await fetch(`${runtimeConfig.public.dev.apiUrl}/user/profile`, {
             method: 'GET',
             headers: {
                 'Authorization': `${sessionCookie.value}`
@@ -40,7 +43,6 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
 
     useState('user', () => null)
 
-    
     if(authData?.statusCode === 200){
         const claim: any = authData?.claim
         

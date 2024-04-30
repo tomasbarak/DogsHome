@@ -56,14 +56,24 @@ export default defineNuxtConfig({
           file: '~/pages/home.vue'
         },
         {
-          name: 'favorites',
-          path: '/lista/favoritos',
-          file: '~/pages/list/favorites.vue'
+          name: 'favoritos',
+          path: '/perfil/lista/favoritos',
+          file: '~/pages/profile/list/favorites.vue'
         },
         {
-          name: 'drafts',
-          path: '/lista/borradores',
-          file: '~/pages/list/drafts.vue'
+          name: 'borradores',
+          path: '/perfil/lista/borradores',
+          file: '~/pages/profile/list/drafts.vue'
+        },
+        {
+          name: 'perfil-id',
+          path: '/perfil/:id',
+          file: '~/pages/profile/[id].vue'
+        },
+        {
+          name: 'publicacion-id',
+          path: '/publicacion/:id',
+          file: '~/pages/publication/[id].vue'
         }
       ]);
     }

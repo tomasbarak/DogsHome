@@ -4,7 +4,7 @@
     const isAuth = useState('isAuth')
 
     if (!isAuth.value) {
-        navigateTo('/login')
+        navigateTo('/auth')
     }
 
     const user = useState('user') 

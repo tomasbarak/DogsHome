@@ -134,12 +134,10 @@
             return
         }
 
-        const idToken = await user.value?.getIdToken();
+        // const idToken = await user.value?.getIdToken();
         
-        useAuthStore().updateUser(user.value?.email!, user.value?.emailVerified!, user.value?.displayName!, user.value?.photoURL!, user.value?.uid!, true);
-
         //Redirect to home page
-        window.location.href = '/home'
+        navigateTo('/home')
     }
 
     const validateRule = (ruleName: string) => {
@@ -340,6 +338,6 @@
                 <button class="h-[50px] w-[100px] border-0 bg-primary rounded-[5px] text-[#fff] flex items-center justify-center text-[10pt] mb-[8px] text-center" @click="handleRegister">Siguiente</button>
             </div>
             
-            <a href="/" class="h-[50px] text-black/[0.45] text-[10pt] flex flex-col justify-center">Continuar de forma anónima</a>
+            <a class="h-[50px] text-black/[0.45] text-[10pt] flex flex-col justify-center cursor-pointer" @click="navigateTo('/home')">Continuar de forma anónima</a>
         </div>
 </template>

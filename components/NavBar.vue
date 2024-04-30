@@ -35,7 +35,7 @@
         </div>
         <div class="navbar-end">
             <div tabindex="0" role="button" class="avatar dropdown w-fit justify-end flex flex-row items-center pl-[10px]" v-if="logged" @focusout="menuVisible = !menuVisible" @focusin="menuVisible = !menuVisible">
-                <Icon color="#d3d3d3" name="ic:round-keyboard-arrow-down" class="w-[24px] h-[24px]" :class="{ 'rotate-180': menuVisible}"></Icon>
+                <Icon color="#d3d3d3" name="ic:round-keyboard-arrow-down" class="w-[24px] h-[24px] transition-transform" :class="{ 'rotate-[-180deg]': menuVisible}"></Icon>
 
                 <a class="flex max-h-[40px] justify-center items-center m-0 ml-[10px]">
                     <h1 class="text-white text-center font-bold"> {{ userNames.nameAndSurname.displayName }}</h1>
@@ -46,58 +46,11 @@
                     <img id="user-profile-picture" class="cursor-pointer" :src="user.picture" alt="User profile picture" onerror="this.onerror=null; this.src='/images/default-user-image.png'" v-else>
                 </div>
 
-                <ul class="menu bg-white rounded-[2px] shadow dropdown-content z-[1] top-[45px] min-w-[200px]">
-                    <li class="menu-title pb-0">Hola, {{ userNames.nameAndSurname.displayName }}</li>
-                    <li class="menu-title pt-0 text-black/[.22]">{{ user.email }}</li>
-                    <li>
-                        <a :href="`/perfil/${user.uid}`" class="text-[#222] table-cell align-middle">
-                            <Icon color="#d3d3d3" name="ic:round-person" class="w-[24px] h-[24px] mr-[16px]"></Icon>
-                            Perfil
-                        </a>
-                    </li>
-                    <li>
-                        <a :href="`/perfil/${user.uid}`" class="text-[#222] table-cell align-middle">
-                            <Icon color="#d3d3d3" name="ic:round-library-books" class="w-[24px] h-[24px] mr-[16px]"></Icon>
-                            Mis Datos
-                        </a>
-                    </li>
-                    <div class="divider my-[1px] cursor-default"></div>
-                    <li>
-                        <a :href="`/perfil/lista/borradores/`" class="text-[#222] table-cell align-middle">
-                            <Icon color="#d3d3d3" name="ic:round-edit" class="w-[24px] h-[24px] mr-[16px]"></Icon>
-                            Borradores
-                        </a>
-                    </li>
-                    <li>
-                        <a :href="`/perfil/${user.uid}`" class="text-[#222] table-cell align-middle">
-                            <Icon color="#d3d3d3" name="ic:round-favorite" class="w-[24px] h-[24px] mr-[16px]"></Icon>
-                            Favoritos
-                        </a>
-                    </li>
-                    <li>
-                        <a :href="`/perfil/${user.uid}`" class="text-[#222] table-cell align-middle">
-                            <Icon color="#d3d3d3" name="ic:round-chat-bubble" class="w-[24px] h-[24px] mr-[16px]"></Icon>
-                            Chats
-                        </a>
-                    </li>
-                    <li>
-                        <a :href="`/perfil/${user.uid}`" class="text-[#222] table-cell align-middle">
-                            <Icon color="#d3d3d3" name="ic:round-add-circle" class="w-[24px] h-[24px] mr-[16px]"></Icon>
-                            Publicar
-                        </a>
-                    </li>
-                    <div class="divider my-[1px] cursor-default"></div>
-                    <li>
-                        <a :href="`/perfil/${user.uid}`" class="text-[#ff3333] table-cell align-middle">
-                            <Icon color="#ff3333" name="ic:round-log-out" class="w-[24px] h-[24px] mr-[16px]"></Icon>
-                            Cerrar sesión
-                        </a>
-                    </li>
-                </ul>
+                <NavDropdown />
             </div>
             <div class="avatar" v-else>
                 <div class="w-[40px] h-[40px] rounded-full">
-                    <img id="user-profile-picture" class="cursor-pointer" src="/images/default-private-user-image.png" alt="Anonymous user profile picture">
+                    <img id="user-profile-picture" class="cursor-pointer" src="/images/default-private-user-image.png" alt="Anonymous user profile picture" @click="navigateTo('/auth')">
                 </div>
             </div>
 
