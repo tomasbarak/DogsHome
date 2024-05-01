@@ -16,8 +16,21 @@ export default defineNuxtPlugin(nuxtApp => {
 
     const app = initializeApp(firebaseConfig);
 
-    const analytics = getAnalytics(app);
+    // const analytics = getAnalytics(app);
     const auth: Auth = getAuth(app);
+
+    nuxtApp.hooks.hook('app:mounted', () => {
+        auth.onIdTokenChanged(async (user) => {
+            if (user) {
+                const token = await user.getIdToken();
+                const res = await setServerSession(token);
+            }
+        });
+    })
+
+
+    nuxtApp.vueApp.provide('$auth', auth);
+    nuxtApp.provide('$auth', auth);
 
     return {
         provide: {
@@ -25,3 +38,17 @@ export default defineNuxtPlugin(nuxtApp => {
         }
     }
 })
+
+async function setServerSession(token: string) {
+    const config = useRuntimeConfig()
+    const {data: responseData} = await useFetch(`${config.public.context == 'dev' ? config.public.dev.apiUrl : config.public.prod.apiUrl}/auth/login`, {
+        method: 'POST',
+        body: {
+            idToken: token,
+            subscription: null
+        },
+        credentials: 'include',
+    })
+
+    return responseData
+}

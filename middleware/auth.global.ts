@@ -45,13 +45,17 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
 
     if(authData?.statusCode === 200){
         const claim: any = authData?.claim
+
+        if(to.path === '/auth'){
+            return navigateTo('/home')
+        }
         
         if(!claim.email_verified && to.path !== '/verification'){
             return navigateTo('/verification')
         }
 
         if(claim.email_verified && to.path === '/verification'){
-            return navigateTo('/')
+            return navigateTo('/home')
         }
 
         const isAuth = useState('isAuth');

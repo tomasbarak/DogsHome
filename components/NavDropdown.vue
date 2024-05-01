@@ -7,14 +7,22 @@
     const logged: boolean = user.logged
 
     let userNames: any = null
-    if (logged) {
+    if (logged && user.name) {
         userNames = JSON.parse(user.name)
+    }
+
+    function handle_logout() {
+        logoutUser()
+        window.location.href = '/auth'
+        // Delete the cookies named session and auth
+        document.cookie = "session=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+        document.cookie = "auth=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
     }
 </script>
 
 <template>
     <ul class="menu bg-white rounded-[2px] shadow dropdown-content z-[1] top-[45px] min-w-[200px]">
-        <li class="menu-title pb-0">Hola, {{ userNames.nameAndSurname.displayName }}</li>
+        <li class="menu-title pb-0">Hola, {{ userNames != null ? userNames.nameAndSurname.displayName : "No Username" }}</li>
         <li class="menu-title pt-0 text-black/[.22]">{{ user.email }}</li>
         <li>
             <a :href="`/perfil/${user.uid}`" class="text-[#222] table-cell align-middle">
@@ -55,7 +63,7 @@
         </li>
         <div class="divider my-[1px] cursor-default"></div>
         <li>
-            <a class="text-[#ff3333] table-cell align-middle" @click="logoutUser(); navigateTo('/auth')">
+            <a class="text-[#ff3333] table-cell align-middle" @click="handle_logout">
                 <Icon color="#ff3333" name="ic:round-log-out" class="w-[24px] h-[24px] mr-[16px]"></Icon>
                 Cerrar sesión
             </a>

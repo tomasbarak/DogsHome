@@ -12,6 +12,9 @@
         userNames = JSON.parse(user.name)
     }
 
+    const sessionCookie = useCookie('session')
+    console.log(sessionCookie.value)
+
 </script>
 
 <template>

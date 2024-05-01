@@ -32,7 +32,7 @@
         }
 
         const idToken = await user.value?.getIdToken();
-        const {data: responseData} = await useFetch(`${config.public.dev.apiUrl}/auth/login`, {
+        const {data: responseData} = await useFetch(`${config.public.context == 'dev' ? config.public.dev.apiUrl : config.public.prod.apiUrl}/auth/login`, {
             method: 'POST',
             body: {
                 idToken: idToken,
@@ -45,7 +45,7 @@
         console.log(user.value?.email)
 
         //Redirect to home page
-        navigateTo('/home')
+        window.location.reload()
     }
 </script>
 

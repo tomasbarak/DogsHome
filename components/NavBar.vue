@@ -7,7 +7,7 @@
     const menuVisible = ref(false)
 
     let userNames: any = null
-    if (logged) {
+    if (logged && user.name) {
         userNames = JSON.parse(user.name)
     }
 
@@ -38,7 +38,7 @@
                 <Icon color="#d3d3d3" name="ic:round-keyboard-arrow-down" class="w-[24px] h-[24px] transition-transform" :class="{ 'rotate-[-180deg]': menuVisible}"></Icon>
 
                 <a class="flex max-h-[40px] justify-center items-center m-0 ml-[10px]">
-                    <h1 class="text-white text-center font-bold"> {{ userNames.nameAndSurname.displayName }}</h1>
+                    <h1 class="text-white text-center font-bold"> {{ userNames != null ? userNames.nameAndSurname.displayName : "No Username"}}</h1>
                 </a>
 
                 <div class="w-[40px] h-[40px] rounded-full ml-[10px]">

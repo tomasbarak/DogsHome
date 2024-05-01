@@ -38,14 +38,6 @@ export default defineNuxtConfig({
   plugins: [
     {src: '~/plugins/firebase.client.ts', mode: 'client'},
   ],
-  vite: {
-    server: {
-      hmr: {
-        host: 'localhost',
-        port: 8443
-      }
-    }
-  },
   hooks: {
     'pages:extend'(pages) {
       
@@ -80,14 +72,14 @@ export default defineNuxtConfig({
   },
   runtimeConfig: {
     public: {
-      context: 'dev',
+      context: 'prod',
       dev: {
         webUrl: 'https://localhost:8443',
-        apiUrl: 'https://localhost:8843',
+        apiUrl: 'https://api.dogshome.com.ar',
         analyticsUrl: 'https://localhost:8883',
         socketsUrl: 'https://localhost:8888',
         notificationsUrl: 'https://localhost:8889',
-        authUrl: 'https://localhost:8890',
+        authUrl: 'https://auth.dogshome.com.ar',
       },
       prod: {
         webUrl: 'https://dogshome.com.ar',
