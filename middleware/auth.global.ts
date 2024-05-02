@@ -1,6 +1,5 @@
 export default defineNuxtRouteMiddleware(async (to, from) => {
     process.env['NODE_TLS_REJECT_UNAUTHORIZED'] = "0"
-    console.log("middleware auth.global.ts")
     const ignoreRoutes = [
         '/profile/image', '/profile/image/'
     ]
@@ -8,13 +7,10 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
     if(ignoreRoutes.includes(to.path)) return
     if(process.client) return
 
-    console.log('middleware auth.global.ts', to.path)
-
     const currentHostName =  useNuxtApp().ssrContext?.event.node.req.headers.host
     const sessionCookie = useCookie('session');
     const runtimeConfig = useRuntimeConfig()
-
-    console.log(sessionCookie.value)
+    const apiUrl = runtimeConfig.public.context == "dev" ? runtimeConfig.public.dev.apiUrl : runtimeConfig.public.prod.apiUrl
 
     if(!sessionCookie.value) return;
 
@@ -27,7 +23,7 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
             body: JSON.stringify({sessionCookie: sessionCookie.value})
         })
 
-        profileRes = await fetch(`${runtimeConfig.public.dev.apiUrl}/user/profile`, {
+        profileRes = await fetch(`${apiUrl}/user/profile`, {
             method: 'GET',
             headers: {
                 'Authorization': `${sessionCookie.value}`
@@ -39,12 +35,28 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
     }
     
     const authData = authRes!.data.value
-    const profileData = profileRes?.json()
+    const profileData = await profileRes?.json()
 
     useState('user', () => null)
 
     if(authData?.statusCode === 200){
         const claim: any = authData?.claim
+        
+        const creationState = useState('creationInstance');
+        creationState.value = profileData.creationInstance;
+
+        if(profileData.creationInstance < 1 || profileData.creationInstance === undefined || profileData.creationInstance === null || profileData.creationInstance === ''){
+            const initProfile = await fetch(`${apiUrl}/user/profile/init`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `${sessionCookie.value}`
+                }
+            })
+        }
+
+        if (profileData.creationInstance < 9 && to.path !== '/setup') {
+            return navigateTo('/setup');
+        }
 
         if(to.path === '/auth'){
             return navigateTo('/home')

@@ -13,7 +13,6 @@
     }
 
     const sessionCookie = useCookie('session')
-    console.log(sessionCookie.value)
 
 </script>
 
