@@ -10,17 +10,19 @@ export default function() {
     const user = useState<User | null>("fb_user", () => null);
     const config = useRuntimeConfig()
 
-    // useNuxtApp().hooks.hook('app:mounted', () => {
-    //     $auth.onAuthStateChanged((user) => {
-    //         if (user) {
-    //             authStore.updateUser(user.email!, user.emailVerified, user.displayName!, user.photoURL!, user.uid, true)
-    //             useState("fb_user", () => user);
-    //         } else {
-    //             authStore.$reset();
-    //             useState("fb_user", () => null);
-    //         }
-    //     });
-    // })
+    useNuxtApp().hooks.hook('app:mounted', () => {
+        $auth.onAuthStateChanged((user) => {
+            console.log("Auth State Changed")
+
+            if (user) {
+                authStore.updateUser(user.email!, user.emailVerified, user.displayName!, user.photoURL!, user.uid, true)
+                useState("fb_user", () => user);
+            } else {
+                authStore.$reset();
+                useState("fb_user", () => null);
+            }
+        });
+    })
     const registerUser = async (email: string, password: string): Promise<any> => {
         try {
             const userCreds = await createUserWithEmailAndPassword($auth, email, password);

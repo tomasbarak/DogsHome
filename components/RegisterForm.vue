@@ -1,6 +1,7 @@
 <script setup lang="ts">
     const { user, registerUser } = useFirebaseAuth()
     const { swalAuthError } = useSwal() 
+    const config = useRuntimeConfig()
     const credentials = reactive({
         email: '',
         password: '',
@@ -134,10 +135,18 @@
             return
         }
 
-        // const idToken = await user.value?.getIdToken();
+        const idToken = await user.value?.getIdToken();
+        const {data: responseData} = await useFetch(`${config.public.context == 'dev' ? config.public.dev.apiUrl : config.public.prod.apiUrl}/auth/login`, {
+            method: 'POST',
+            body: {
+                idToken: idToken,
+                subscription: null
+            },
+            credentials: 'include',
+        })
         
-        //Redirect to home page
-        navigateTo('/home')
+        //Refresh page
+        window.location.reload()
     }
 
     const validateRule = (ruleName: string) => {
@@ -213,17 +222,6 @@
     * {
         line-height: normal;
     }
-    .loading-hidden {
-        visibility: hidden;
-        opacity: 0;
-        transition: visibility 0.25s, opacity 0.5s linear;
-    }
-
-    .loading-shown {
-        visibility: visible;
-        opacity: 1;
-        transition: visibility 0.25s, opacity 0.5s linear;
-    }
 
     .password-strength {
         width: 0;
@@ -274,70 +272,70 @@
 
 <template>
     <div id="register-container" class="w-full max-w-full flex flex-col relative h-fit items-center justify-center p-[15px] box-border">
-            <LoadingAnimation id="loading" class="loading-hidden absolute z-1" />
+        <LoadingAnimation id="loading" class="loading-hidden absolute z-1" />
 
-            <h1 class="font-['lato'] font-extrabold text-[24pt] text-[#333] max-w-[350px] w-[75vw] md:w-[50vw] mb-[15px]">Registráte</h1>
+        <h1 class="font-['lato'] font-extrabold text-[24pt] text-[#333] max-w-[350px] w-[75vw] md:w-[50vw] mb-[15px]">Registráte</h1>
 
-            <div class="mb-[15px] mt-[10px]">
-                <div class="label p-0 w-full max-w-[350px]">
-                    <span class="text-[12pt] p-0 text-left text-black">E-mail:</span>
-                </div>
-    
-                <AuthInput placeholder="ejemplo@mail.com" type="email" v-model="credentials.email" />
-            </div>
-            
-
-            <div class="mb-[15px] mt-[10px]">
-                <div class="label p-0 w-full max-w-[350px]">
-                    <span class="text-[12pt] p-0 text-left text-black">Contraseña:</span>
-                </div>
-                
-                <PasswordInput  placeholder="Contraseña" type="password" v-model="credentials.password" @input="handlePasswordInput"/>
-
-                <div class="w-[calc(100%+20px)] flex flex-col mt-[25px]">
-                    <div class="w-full flex flex-row items-center justify-center">
-                        <div id="password-strength-container" class="transition-all duration-500 w-full h-[5px] mt-[5px] mb-[5px] radious-[25px] bg-[#d3d3d3] flex">
-                            <div id="password-strength" class="empty-pass transition-all duration-500 flex weak-pass"></div>
-                        </div>
-                        <CheckIcon id="password-strong" class="fill-white rule-icon"/>
-                    </div>
-                    <!-- LIST -->
-                    <ul class="text-[10pt] font-extrabold text-[#d3d3d3]">
-                        <li id="text-rule-eight-chars" class="rule-item">
-                            8 Caracteres *
-                        </li>
-                        <li id="text-rule-upper-lower" class="rule-item">
-                            1 Minúscula y 1 mayúscula
-                        </li>
-                        <li id="text-rule-one-number" class="rule-item">
-                            1 Número *
-                        </li>
-                        <li id="text-rule-special-char" class="rule-item">
-                            1 Carácter especial
-                        </li>
-                    </ul>
-                </div>
-            
+        <div class="mb-[15px] mt-[10px]">
+            <div class="label p-0 w-full max-w-[350px]">
+                <span class="text-[12pt] p-0 text-left text-black">E-mail:</span>
             </div>
 
-            <div class="mb-[15px] mt-[10px]">
-                <div class="label p-0 w-full max-w-[350px]">
-                    <span class="text-[12pt] p-0 text-left text-black">Repetir contraseña:</span>
-                </div>
-
-                <AuthInput v-if="useState('passwordShowState').value" id="repeat-password-input" placeholder="Repetir contraseña" type="text" v-model="credentials.repeatPassword" @input="handleRepeatPasswordInput"/>
-                <AuthInput v-else id="repeat-password-input" placeholder="Repetir contraseña" type="password" v-model="credentials.repeatPassword" @input="handleRepeatPasswordInput"/>
-            
-                <div class="flex flex-row-reverse mt-[5px] w-[calc(100%+20px)]">
-                    <CheckIcon id="password-concidence" class="fill-white rule-icon"/>
-                </div>
-            </div>
-
-            <div class="mb-[15px] mt-[15px] flex flex-row items-center justify-between w-[75w] md:w-[50vw] max-w-[350px]">
-                <a class="cursor-pointer text-[1em] text-center text-primary mr-[15px] underline" @click="useState('authMethod').value = 'login'">¿Ya tenés cuenta? Iniciá sesión</a>
-                <button class="h-[50px] w-[100px] border-0 bg-primary rounded-[5px] text-[#fff] flex items-center justify-center text-[10pt] mb-[8px] text-center" @click="handleRegister">Siguiente</button>
-            </div>
-            
-            <a class="h-[50px] text-black/[0.45] text-[10pt] flex flex-col justify-center cursor-pointer" @click="navigateTo('/home')">Continuar de forma anónima</a>
+            <AuthInput placeholder="ejemplo@mail.com" type="email" v-model="credentials.email" />
         </div>
+        
+
+        <div class="mb-[15px] mt-[10px]">
+            <div class="label p-0 w-full max-w-[350px]">
+                <span class="text-[12pt] p-0 text-left text-black">Contraseña:</span>
+            </div>
+            
+            <PasswordInput  placeholder="Contraseña" type="password" v-model="credentials.password" @input="handlePasswordInput"/>
+
+            <div class="w-[calc(100%+20px)] flex flex-col mt-[25px]">
+                <div class="w-full flex flex-row items-center justify-center">
+                    <div id="password-strength-container" class="transition-all duration-500 w-full h-[5px] mt-[5px] mb-[5px] radious-[25px] bg-[#d3d3d3] flex">
+                        <div id="password-strength" class="empty-pass transition-all duration-500 flex weak-pass"></div>
+                    </div>
+                    <CheckIcon id="password-strong" class="fill-white rule-icon"/>
+                </div>
+                <!-- LIST -->
+                <ul class="text-[10pt] font-extrabold text-[#d3d3d3]">
+                    <li id="text-rule-eight-chars" class="rule-item">
+                        8 Caracteres *
+                    </li>
+                    <li id="text-rule-upper-lower" class="rule-item">
+                        1 Minúscula y 1 mayúscula
+                    </li>
+                    <li id="text-rule-one-number" class="rule-item">
+                        1 Número *
+                    </li>
+                    <li id="text-rule-special-char" class="rule-item">
+                        1 Carácter especial
+                    </li>
+                </ul>
+            </div>
+        
+        </div>
+
+        <div class="mb-[15px] mt-[10px]">
+            <div class="label p-0 w-full max-w-[350px]">
+                <span class="text-[12pt] p-0 text-left text-black">Repetir contraseña:</span>
+            </div>
+
+            <AuthInput v-if="useState('passwordShowState').value" id="repeat-password-input" placeholder="Repetir contraseña" type="text" v-model="credentials.repeatPassword" @input="handleRepeatPasswordInput"/>
+            <AuthInput v-else id="repeat-password-input" placeholder="Repetir contraseña" type="password" v-model="credentials.repeatPassword" @input="handleRepeatPasswordInput"/>
+        
+            <div class="flex flex-row-reverse mt-[5px] w-[calc(100%+20px)]">
+                <CheckIcon id="password-concidence" class="fill-white rule-icon"/>
+            </div>
+        </div>
+
+        <div class="mb-[15px] mt-[15px] flex flex-row items-center justify-between w-[75w] md:w-[50vw] max-w-[350px]">
+            <a class="cursor-pointer text-[1em] text-center text-primary mr-[15px] underline" @click="useState('authMethod').value = 'login'">¿Ya tenés cuenta? Iniciá sesión</a>
+            <button class="h-[50px] w-[100px] border-0 bg-primary rounded-[5px] text-[#fff] flex items-center justify-center text-[10pt] mb-[8px] text-center" @click="handleRegister">Siguiente</button>
+        </div>
+        
+        <a class="h-[50px] text-black/[0.45] text-[10pt] flex flex-col justify-center cursor-pointer" @click="navigateTo('/home')">Continuar de forma anónima</a>
+    </div>
 </template>
