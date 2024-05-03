@@ -23,7 +23,8 @@ export default {
                     "info": "#3abff8",
                     "success": "#36d399",
                     "warning": "#fbbd23",
-                    "error": "#f87272"
+                    "error": "#f87272",
+                    "tooltip-bg": "#d3d3d3",
                 }
             }
         ]
