@@ -1,6 +1,7 @@
 <script setup lang="ts">
     const { user, registerUser } = useFirebaseAuth()
     const { swalAuthError } = useSwal() 
+    const { sendVerificationEmail } = useSendVerificationEmail()
     const config = useRuntimeConfig()
     const credentials = reactive({
         email: '',
@@ -144,6 +145,8 @@
             },
             credentials: 'include',
         })
+
+        await sendVerificationEmail()
         
         //Refresh page
         window.location.reload()

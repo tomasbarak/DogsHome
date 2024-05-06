@@ -14,6 +14,11 @@
 
     const sessionCookie = useCookie('session')
 
+    useNuxtApp().hooks.hook('app:mounted', async () => {
+        const { $auth } = useNuxtApp()
+        $auth.currentUser?.reload()
+    })
+
 </script>
 
 <template>

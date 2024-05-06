@@ -1,5 +1,6 @@
 <script setup lang="ts">
     const creationState: Ref<number> = useState('creationInstance');
+    const profileState: Ref<any> = useState('userProfile');
     const loadingState: Ref<boolean> = useState('loadingInstance', () => false);
     const config = useRuntimeConfig();
     const profile = reactive({
@@ -36,6 +37,18 @@
             console.error(error);
         }
     }
+
+    useNuxtApp().hooks.hook("app:created", () => {
+        if (profileState.value) {
+            if (profileState.value.name) {
+                profile.name = String(profileState.value.name).charAt(0).toUpperCase() + String(profileState.value.name).slice(1)
+            }
+
+            if (profileState.value.surname) {
+                profile.surname = String(profileState.value.surname).charAt(0).toUpperCase() + String(profileState.value.surname).slice(1)
+            }
+        }
+    });
 </script>
 
 <template>

@@ -2,7 +2,7 @@
     const creationState: Ref<number> = useState('creationInstance')
     const loadingState: Ref<boolean> = useState('loadingInstance', () => false)
         
-    creationState.value = 2
+    // creationState.value = 2
 </script>
 
 <style scoped>
@@ -43,7 +43,7 @@
         </svg>
         
         <div id="setup-container" class="w-full h-screen flex flex-col relative items-center justify-start pr-[15px] pl-[15px] pt-[50px] pb-[50px] box-border max-w-full">
-            <ul class="hidden md:steps md:flex md:flex-row md:w-full md:items-center md:justify-center md:mb-[50px]">
+            <!-- <ul class="hidden md:steps md:flex md:flex-row md:w-full md:items-center md:justify-center md:mb-[50px]">
                 <li class="step" data-content="" :class="{'step-primary': creationState >= 1}"></li>
                 <li class="step" data-content="" :class="{'step-primary': creationState >= 2}"></li>
                 <li class="step" data-content="" :class="{'step-primary': creationState >= 3}"></li>
@@ -52,10 +52,10 @@
                 <li class="step" data-content="" :class="{'step-primary': creationState >= 6}"></li>
                 <li class="step" data-content="" :class="{'step-primary': creationState >= 7}"></li>
                 <li class="step" data-content="" :class="{'step-primary': creationState >= 8}"></li>
-            </ul>
+            </ul> -->
             <div class="max-w-[500px] w-full flex flex-col justify-start items-center h-full relative">
                 <Transition class="w-full h-full" name="fade">
-                    <Step01 v-if="creationState === 1 && !loadingState" />
+                    <Step01 v-if="creationState <= 1 && !loadingState" />
                     <Step02 v-else-if="creationState === 2 && !loadingState" />
                     <Step03 v-else-if="creationState === 3 && !loadingState" />
                     <Step04 v-else-if="creationState === 4 && !loadingState" />

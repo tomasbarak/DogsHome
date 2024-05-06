@@ -35,7 +35,15 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
     }
     
     const authData = authRes!.data.value
-    const profileData = await profileRes?.json()
+    let profileData = {
+        creationInstance: -1
+    }
+    try {
+        profileData = await profileRes?.json()
+    } catch (e) {
+        console.log('error', e)
+        profileData.creationInstance = -1;
+    }
 
     useState('user', () => null)
 
@@ -43,9 +51,12 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
         const claim: any = authData?.claim
         
         const creationState = useState('creationInstance');
-        creationState.value = profileData.creationInstance;
+        const profileState = useState('userProfile')
 
-        if(profileData.creationInstance < 1 || profileData.creationInstance === undefined || profileData.creationInstance === null || profileData.creationInstance === ''){
+        creationState.value = profileData.creationInstance;
+        profileState.value = profileData;
+
+        if(profileData.creationInstance < 1 || profileData.creationInstance === undefined || profileData.creationInstance === null){
             const initProfile = await fetch(`${apiUrl}/user/profile/init`, {
                 method: 'POST',
                 headers: {
@@ -54,16 +65,16 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
             })
         }
 
-        if (profileData.creationInstance < 9 && to.path !== '/setup') {
-            return navigateTo('/setup');
-        }
-
         if(to.path === '/auth'){
             return navigateTo('/home')
         }
         
         if(!claim.email_verified && to.path !== '/verification'){
             return navigateTo('/verification')
+        }
+
+        if (profileData.creationInstance < 9 && to.path !== '/setup' && to.path !== '/verification') {
+            return navigateTo('/setup');
         }
 
         if(claim.email_verified && to.path === '/verification'){

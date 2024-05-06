@@ -87,6 +87,8 @@ function init(app, firebaseAdmin) {
             res.status(401).send({ error: `Cant verify token: ${req.cookies.session}` });
         }
     });
+
+    // 1
     app.post('/profile/creation/start', (req, res) => {
         connectClient(mongoURL).then((client) => {
             let { name, surname } = req.body;
@@ -155,6 +157,8 @@ function init(app, firebaseAdmin) {
             }
         }
     });
+
+    // 2 
     app.post('/profile/creation/profile-type', (req, res) => {
         const creationInstance = res.locals.creationInstance;
         let targetCreatioInstance = 1;
@@ -194,6 +198,8 @@ function init(app, firebaseAdmin) {
             res.status(401).send('Not authorized');
         }
     });
+
+
     app.get('/profile/creation/shelter-name', (req, res) => {
         const isPrivate = res.locals.isPrivate;
         const isVerified = res.locals.isVerified;
@@ -216,6 +222,8 @@ function init(app, firebaseAdmin) {
             }
         }
     });
+
+    // 3
     app.post('/profile/creation/shelter-name', (req, res) => {
         const creationInstance = res.locals.creationInstance;
         let targetCreatioInstance = 3;
@@ -274,6 +282,8 @@ function init(app, firebaseAdmin) {
             }
         }
     });
+
+    // 4
     app.post('/profile/creation/profile-photo', (req, res) => {
         const creationInstance = res.locals.creationInstance;
         let targetCreatioInstance = 4;
@@ -341,6 +351,7 @@ function init(app, firebaseAdmin) {
         }
     });
 
+    // 5
     app.post('/profile/creation/phone', (req, res) => {
         const creationInstance = res.locals.creationInstance;
         let targetCreatioInstance = 5;
@@ -406,6 +417,8 @@ function init(app, firebaseAdmin) {
         }
 
     });
+
+    // 6
     app.post('/profile/creation/short-description', (req, res) => {
         const creationInstance = res.locals.creationInstance;
         const accType = res.locals.accType;
@@ -470,6 +483,8 @@ function init(app, firebaseAdmin) {
             }
         }
     });
+
+    // 7
     app.post('/profile/creation/web-site', (req, res) => {
         const creationInstance = res.locals.creationInstance;
         const accType = res.locals.accType;
@@ -527,6 +542,8 @@ function init(app, firebaseAdmin) {
             }
         }
     });
+
+    // 8
     app.post('/profile/creation/social-media', (req, res) => {
         const creationInstance = res.locals.creationInstance;
         const accType = res.locals.accType;
@@ -587,6 +604,8 @@ function init(app, firebaseAdmin) {
             }
         }
     });
+
+    // 9
     app.post('/profile/creation/terms-and-conditions', (req, res) => {
         const creationInstance = res.locals.creationInstance;
         const accType = res.locals.accType;

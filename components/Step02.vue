@@ -36,6 +36,30 @@
         }
     }
 
+    const handleStepBack = async () => {
+        loadingState.value = true;
+
+        try {
+            const response = await fetch(`${apiUrl}/user/profile/creation/step/back`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                credentials: 'include',
+            });
+
+            if(response.ok) {
+                creationState.value = creationState.value - 1
+                loadingState.value = false
+                return
+            }
+
+            creationState.value = 1
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
     const handleSlide = (forward: boolean) => {
         if (forward) {
             profile.account_type >= 2 ? profile.account_type = 0 : profile.account_type += 1
@@ -154,6 +178,8 @@
         <span class="flex grow"></span>
 
         <div class="flex w-full flex-row items-center max-w-[350px] justify-center md:justify-end">
+            <button @click="handleStepBack" class="h-[50px] w-[100px] bg-slate-100 text-[#333] p-0 m-0 rounded-[4px]">Atrás</button>
+            <span class="flex grow"></span>
             <button @click="handleStepSubmission" class="h-[50px] w-[100px] bg-primary text-white p-0 m-0 rounded-[4px]">Siguiente</button>
         </div>
     </div>
