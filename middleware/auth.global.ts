@@ -36,13 +36,13 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
     
     const authData = authRes!.data.value
     let profileData = {
-        creationInstance: -1
+        creation_instance: -1
     }
     try {
         profileData = await profileRes?.json()
     } catch (e) {
         console.log('error', e)
-        profileData.creationInstance = -1;
+        profileData.creation_instance = -1;
     }
 
     useState('user', () => null)
@@ -53,18 +53,21 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
         const creationState = useState('creationInstance');
         const profileState = useState('userProfile')
 
-        creationState.value = profileData.creationInstance;
-        profileState.value = profileData;
-
-        if(profileData.creationInstance < 1 || profileData.creationInstance === undefined || profileData.creationInstance === null){
+        
+        if(profileData.creation_instance < 1 || profileData.creation_instance === undefined || profileData.creation_instance === null){
             const initProfile = await fetch(`${apiUrl}/user/profile/init`, {
                 method: 'POST',
                 headers: {
                     'Authorization': `${sessionCookie.value}`
                 }
             })
+            
+            profileData.creation_instance = 1;
         }
-
+        
+        creationState.value = profileData.creation_instance;
+        profileState.value = profileData;
+        
         if(to.path === '/auth'){
             return navigateTo('/home')
         }
@@ -73,7 +76,7 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
             return navigateTo('/verification')
         }
 
-        if (profileData.creationInstance < 9 && to.path !== '/setup' && to.path !== '/verification') {
+        if (profileData.creation_instance < 9 && to.path !== '/setup' && to.path !== '/verification') {
             return navigateTo('/setup');
         }
 

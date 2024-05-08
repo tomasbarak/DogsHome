@@ -24,7 +24,8 @@
             });
 
             if(response.ok) {
-                creationState.value = 3
+                const response_json = await response.json()
+                creationState.value = response_json.nextInstance
                 loadingState.value = false
                 return
             }
