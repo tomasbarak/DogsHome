@@ -2,7 +2,7 @@
     const creationState: Ref<number> = useState('creationInstance')
     const loadingState: Ref<boolean> = useState('loadingInstance', () => false)
 
-    // creationState.value = 3
+    // creationState.value = 4
 </script>
 
 <style scoped>
@@ -60,6 +60,10 @@
                     <Step03 v-else-if="creationState === 3 && !loadingState" />
                     <Step04 v-else-if="creationState === 4 && !loadingState" />
                     <Step05 v-else-if="creationState === 5 && !loadingState" />
+                    <Step06 v-else-if="creationState === 6 && !loadingState" />
+                    <Step07 v-else-if="creationState === 7 && !loadingState" />
+                    <Step08 v-else-if="creationState === 8 && !loadingState" />
+                    <Step09 v-else-if="creationState === 9 && !loadingState" />
                     <LoadingAnimation id="loading" class="loading-shown absolute z-1" v-else/>
                 </Transition>
             </div>

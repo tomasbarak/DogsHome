@@ -1,6 +1,6 @@
 <template>
     <div class="absolute w-full top-0 left-0 h-full z-0">
-        <h1>Step 05</h1>
+        <h1>Step 08</h1>
         <button @click="$emit('submitStep')">Next</button>
     </div>
 </template>
