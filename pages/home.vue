@@ -14,9 +14,14 @@
 
     const sessionCookie = useCookie('session')
 
-    useNuxtApp().hooks.hook('app:mounted', async () => {
+    useNuxtApp().hooks.hook('app:created', async () => {
         const { $auth } = useNuxtApp()
         $auth.currentUser?.reload()
+
+        if ($auth.currentUser) {
+            const currentUser = $auth.currentUser
+            useAuthStore().updateUser(currentUser.email!, currentUser.emailVerified, currentUser.displayName!, currentUser.photoURL!, currentUser.uid, true)
+        }
     })
 
 </script>

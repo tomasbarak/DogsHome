@@ -3,14 +3,53 @@
     const profileState: Ref<any> = useState('userProfile');
     const loadingState: Ref<boolean> = useState('loadingInstance', () => false);
     const config = useRuntimeConfig();
+    const { swalProfileCreationError } = useSwal() 
     const profile = reactive({
         'name': '',
         'surname': '',
     });
     const apiUrl = config.public.context === 'dev' ? config.public.dev.apiUrl : config.public.prod.apiUrl;
 
+    const securityChecks = () => {
+        if (!profile.name || !profile.surname) {
+            return {secure: false, message: 'Por favor, completá todos los campos.'};
+        }
+
+        if (profile.name.length < 2 || profile.surname.length < 2) {
+            return {secure: false, message: 'El nombre o el apellido son demasiado cortos.'};
+        }
+
+        if (profile.name.length > 50 || profile.surname.length > 50) {
+            return {secure: false, message: 'El nombre o el apellido son demasiado largos.'};
+        }
+
+        return {secure: true, message: ''};
+    }
+
+    const handleSecurityChecks = () => {
+        const securityChecksResult = securityChecks();
+
+        if (!securityChecksResult.secure) {
+            swalProfileCreationError(securityChecksResult.message);
+            return false;
+        }
+
+        return true;
+    }
+
+    const handleServerError = (error: any) => {
+        console.error(error);
+        swalProfileCreationError('Ocurrió un error inesperado. Por favor, intentá nuevamente.');
+        loadingState.value = false;
+    }
+
     const handleStepSubmission = async () => {
         loadingState.value = true;
+
+        // if (!handleSecurityChecks()) {
+        //     loadingState.value = false;
+        //     return;
+        // }
 
         try {
             const response = await fetch(`${apiUrl}/user/profile/creation/step/1`, {
@@ -32,7 +71,7 @@
                 return
             }
 
-            creationState.value = 1
+            handleServerError(await response.json())
             return
         } catch (error) {
             console.error(error);

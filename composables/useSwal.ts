@@ -11,7 +11,18 @@ export default function useSwal() {
         })
     }
 
+    const swalProfileCreationError = (error: string) => {
+        Swal.fire({
+            title: 'Error',
+            text: error,
+            icon: 'error',
+            confirmButtonText: 'Aceptar',
+            confirmButtonColor: '#079292'
+        })
+    }
+
     return {
-        swalAuthError
+        swalAuthError,
+        swalProfileCreationError
     }
 } 
