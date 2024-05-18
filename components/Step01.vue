@@ -46,10 +46,10 @@
     const handleStepSubmission = async () => {
         loadingState.value = true;
 
-        // if (!handleSecurityChecks()) {
-        //     loadingState.value = false;
-        //     return;
-        // }
+        if (!handleSecurityChecks()) {
+            loadingState.value = false;
+            return;
+        }
 
         try {
             const response = await fetch(`${apiUrl}/user/profile/creation/step/1`, {

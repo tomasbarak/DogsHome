@@ -3,17 +3,39 @@
     const profileState: Ref<any> = useState('userProfile');
     const loadingState: Ref<boolean> = useState('loadingInstance', () => false);
     const config = useRuntimeConfig();
+    const { swalProfileCreationError } = useSwal() 
     const profile = reactive({
         'photo_url': '',
         'photo_b64': ''
     });
     const apiUrl = config.public.context === 'dev' ? config.public.dev.apiUrl : config.public.prod.apiUrl;
 
+    const handleServerError = (error: any) => {
+        console.error(error);
+        switch (error) {
+            case "FILE_TOO_BIG":
+                swalProfileCreationError('La imágen es demasiado grande. Por favor, seleccioná una imágen de menos de 5MB.');
+                break;
+            default:
+                swalProfileCreationError('Ocurrió un error inesperado. Por favor, intentá nuevamente.');
+                break;
+        }
+
+        loadingState.value = false;
+    }
+
     const uploadPhoto = async () => {
         const formData = new FormData();
         const fileInput = document.querySelector('#upload-photo') as HTMLInputElement;
 
         if (fileInput.files?.length! > 0) {
+            //Check if file size is less than 5MB
+            if (fileInput.files![0].size > 1024 * 1024 * 5) {
+                handleServerError("FILE_TOO_BIG");
+                return false;
+            }
+            
+
             formData.append("file", fileInput.files![0]);
 
             const upload_response = await fetch(`${apiUrl}/user/profile/image`, {
@@ -28,8 +50,13 @@
             if (upload_response.ok) {
                 const response_json = await upload_response.json();
                 profile.photo_url = response_json.photo;
-                return
+                return true
             }
+
+            const res_json = await upload_response.json()
+            handleServerError(res_json.err)
+
+            return false
         }
         
     }
@@ -38,7 +65,13 @@
         loadingState.value = true;
 
         try {
-            await uploadPhoto()
+            const uploadSuccessful = await uploadPhoto()
+
+            if (!uploadSuccessful) {
+                loadingState.value = false;
+                return;
+            }
+
             const response = await fetch(`${apiUrl}/user/profile/creation/step/4`, {
                 method: 'POST',
                 headers: {
@@ -57,7 +90,8 @@
                 return
             }
 
-            creationState.value = 3
+            const res_json = await response.json()
+            handleServerError(res_json)
             return
         } catch (error) {
             console.error(error);

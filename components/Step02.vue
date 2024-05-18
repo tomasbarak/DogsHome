@@ -2,14 +2,49 @@
     const creationState: Ref<number> = useState('creationInstance');
     const loadingState: Ref<boolean> = useState('loadingInstance', () => false);
     const config = useRuntimeConfig();
+    const { swalProfileCreationError } = useSwal() 
     const profile = reactive({
         'account_type': 0,
     });
 
     const apiUrl = config.public.context === 'dev' ? config.public.dev.apiUrl : config.public.prod.apiUrl;
 
+    const securityChecks = () => {
+        if (profile.account_type === null || profile.account_type === undefined || profile.account_type === -1) {
+            return {secure: false, message: 'Por favor, completá todos los campos.'};
+        }
+
+        if (profile.account_type < 0 || profile.account_type > 2) {
+            return {secure: false, message: 'Seleccione un tipo de cuenta válido.'};
+        }
+
+        return {secure: true, message: ''};
+    }
+
+    const handleSecurityChecks = () => {
+        const securityChecksResult = securityChecks();
+
+        if (!securityChecksResult.secure) {
+            swalProfileCreationError(securityChecksResult.message);
+            return false;
+        }
+
+        return true;
+    }
+
+    const handleServerError = (error: any) => {
+        console.error(error);
+        swalProfileCreationError('Ocurrió un error inesperado. Por favor, intentá nuevamente.');
+        loadingState.value = false;
+    }
+
     const handleStepSubmission = async () => {
         loadingState.value = true;
+
+        if (!handleSecurityChecks()) {
+            loadingState.value = false;
+            return;
+        }
 
         try {
             const response = await fetch(`${apiUrl}/user/profile/creation/step/2`, {
@@ -30,7 +65,7 @@
                 return
             }
 
-            creationState.value = 1
+            handleServerError(await response.json())
             return
         } catch (error) {
             console.error(error);
@@ -147,7 +182,7 @@
                                 </button>
                             </form>
                             <h3 class="font-bold text-lg">Soy un refugio</h3>
-                            <p class="py-4">¡Tengo muchos perros para dar en adopcion!</p>
+                            <p class="py-4">¡Tengo muchos perros para dar en adopción!</p>
                         </div>
                     </dialog>
                 </div>
@@ -165,7 +200,7 @@
                                 </button>
                             </form>
                             <h3 class="font-bold text-lg">Soy un rescatista</h3>
-                            <p class="py-4">¡Quiero dar en adopcion a uno o mas perros por mi cuenta!</p>
+                            <p class="py-4">¡Quiero dar en adopción a uno o más perros por mi cuenta!</p>
                         </div>
                     </dialog>
                 </div>
