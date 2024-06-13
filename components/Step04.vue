@@ -142,7 +142,7 @@
                 return
             }
 
-            creationState.value = 1
+            creationState.value = 4
         } catch (error) {
             console.error(error);
         }

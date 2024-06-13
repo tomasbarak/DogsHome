@@ -1,10 +1,10 @@
-<script setup>
+<script setup lang="ts">
 
     onMounted( async () => {
         const animationElement = document.querySelector("#animationElement")
 
         const animation = useLottie(
-            animationElement,
+            animationElement as HTMLElement,
             '/animations/dog-walking.json'
         )
 

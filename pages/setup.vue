@@ -2,7 +2,7 @@
     const creationState: Ref<number> = useState('creationInstance')
     const loadingState: Ref<boolean> = useState('loadingInstance', () => false)
 
-    // creationState.value = 4
+    // creationState.value = 8
 </script>
 
 <style scoped>
@@ -42,6 +42,8 @@
             </g>
         </svg>
         
+        <!-- <WaitingDogAnimation class="absolute bottom-0 left-0" /> -->
+
         <div id="setup-container" class="w-full h-screen flex flex-col relative items-center justify-start pr-[15px] pl-[15px] pt-[50px] pb-[50px] box-border max-w-full">
             <!-- <ul class="hidden md:steps md:flex md:flex-row md:w-full md:items-center md:justify-center md:mb-[50px]">
                 <li class="step" data-content="" :class="{'step-primary': creationState >= 1}"></li>
@@ -69,6 +71,6 @@
             </div>
         </div>
 
-        <a class="absolute bottom-[15px] right-[15px] font-['libel-suit-rg'] w-auto text-center text-primary text-[24px]">DogsHome</a>
+        <a class="absolute invisible bottom-[15px] right-[15px] font-['libel-suit-rg'] w-auto text-center text-primary text-[24px] md:visible">DogsHome</a>
     </div>
 </template>
