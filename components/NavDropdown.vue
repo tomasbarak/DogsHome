@@ -4,6 +4,7 @@
     import { ref } from 'vue'
 
     const user = toRaw(useAuthStore().user)
+    const profile: any = toRaw(useState('userProfile').value)
     const logged: boolean = user.logged
 
     let userNames: any = null
@@ -37,7 +38,7 @@
             </a>
         </li>
         <div class="divider my-[1px] cursor-default"></div>
-        <li>
+        <li v-if="profile.accountType == 1 || profile.accountType == 2">
             <a :href="`/perfil/lista/borradores/`" class="text-[#222] table-cell align-middle">
                 <Icon color="#d3d3d3" name="ic:round-edit" class="w-[24px] h-[24px] mr-[16px]"></Icon>
                 Borradores
@@ -49,19 +50,21 @@
                 Favoritos
             </a>
         </li>
+        <div class="divider my-[1px] cursor-default"></div>
         <li>
             <a :href="`/perfil/${user.uid}`" class="text-[#222] table-cell align-middle">
                 <Icon color="#d3d3d3" name="ic:round-chat-bubble" class="w-[24px] h-[24px] mr-[16px]"></Icon>
                 Chats
             </a>
         </li>
-        <li>
+        <div class="divider my-[1px] cursor-default"></div>
+        <li v-if="profile.accountType == 1 || profile.accountType == 2">
             <a :href="`/perfil/${user.uid}`" class="text-[#222] table-cell align-middle">
                 <Icon color="#d3d3d3" name="ic:round-add-circle" class="w-[24px] h-[24px] mr-[16px]"></Icon>
                 Publicar
             </a>
         </li>
-        <div class="divider my-[1px] cursor-default"></div>
+        <div v-if="profile.accountType == 1 || profile.accountType == 2" class="divider my-[1px] cursor-default"></div>
         <li>
             <a class="text-[#ff3333] table-cell align-middle" @click="handle_logout">
                 <Icon color="#ff3333" name="ic:round-log-out" class="w-[24px] h-[24px] mr-[16px]"></Icon>

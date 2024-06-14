@@ -1,3 +1,5 @@
+import { useAuthStore } from '@/stores/authStore'
+
 export default defineNuxtRouteMiddleware(async (to, from) => {
     process.env['NODE_TLS_REJECT_UNAUTHORIZED'] = "0"
     const ignoreRoutes = [
