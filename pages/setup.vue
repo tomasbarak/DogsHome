@@ -2,7 +2,7 @@
     const creationState: Ref<number> = useState('creationInstance')
     const loadingState: Ref<boolean> = useState('loadingInstance', () => false)
 
-    // creationState.value = 8
+    // creationState.value = 9
 </script>
 
 <style scoped>

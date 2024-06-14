@@ -50,7 +50,8 @@
             });
 
             if(response.ok) {
-                creationState.value = creationState.value - 1
+                const response_json = await response.json()
+                creationState.value = response_json.previousInstance
                 loadingState.value = false
                 return
             }

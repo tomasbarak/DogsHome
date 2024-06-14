@@ -34,7 +34,7 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
         console.log('error', e)
     }
     
-    const authData = authRes!.data.value
+    const authData: any = authRes!.data.value
     let profileData = {
         creation_instance: -1
     }
@@ -76,8 +76,12 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
             return navigateTo('/verification')
         }
 
-        if (profileData.creation_instance < 9 && to.path !== '/setup' && to.path !== '/verification') {
+        if (profileData.creation_instance <= 9 && to.path !== '/setup' && to.path !== '/verification') {
             return navigateTo('/setup');
+        }
+
+        if (to.path == '/setup' && profileData.creation_instance > 9) {
+            return navigateTo('/home');
         }
 
         if(claim.email_verified && to.path === '/verification'){

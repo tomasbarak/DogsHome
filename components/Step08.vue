@@ -1,11 +1,8 @@
 <script setup lang="ts">
-import SocialInput from './SocialInput.vue';
-
     const creationState: Ref<number> = useState('creationInstance');
-    const profileState: Ref<any> = useState('userProfile');
     const loadingState: Ref<boolean> = useState('loadingInstance', () => false);
     const config = useRuntimeConfig();
-    const { swalProfileCreationError } = useSwal() 
+    const { swalProfileCreationError } = useSwal();
     const profile = reactive({
         'instagram': '',
         'facebook': '',
@@ -91,7 +88,8 @@ import SocialInput from './SocialInput.vue';
             });
 
             if(response.ok) {
-                creationState.value = creationState.value - 1
+                const response_json = await response.json()
+                creationState.value = response_json.previousInstance
                 loadingState.value = false
                 return
             }

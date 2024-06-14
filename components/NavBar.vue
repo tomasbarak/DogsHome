@@ -50,7 +50,7 @@
             </div>
             <div class="avatar" v-else>
                 <div class="w-[40px] h-[40px] rounded-full">
-                    <img id="user-profile-picture" class="cursor-pointer" src="/images/default-private-user-image.png" alt="Anonymous user profile picture" @click="navigateTo('/auth')">
+                    <img id="user-profile-picture" class="cursor-pointer" src="/images/default-private-user-image.png" alt="Anonymous user profile picture" onclick="window.location = '/auth'">
                 </div>
             </div>
 
