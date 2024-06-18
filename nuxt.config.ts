@@ -64,6 +64,11 @@ export default defineNuxtConfig({
           file: '~/pages/profile/[id].vue'
         },
         {
+          name: 'mi-perfil',
+          path: '/perfil',
+          file: '~/pages/profile.vue'
+        },
+        {
           name: 'publicacion-id',
           path: '/publicacion/:id',
           file: '~/pages/publication/[id].vue'

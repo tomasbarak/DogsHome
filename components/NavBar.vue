@@ -3,25 +3,39 @@
     import { ref } from 'vue'
 
     const user = toRaw(useAuthStore().user)
+    const profile: any = toRaw(useState('userProfile').value)
     const logged: boolean = user.logged
     const menuVisible = ref(false)
 
+    console.log("USER PROFILE", profile)
+
     let userNames: any = null
-    if (logged && user.name) {
-        userNames = JSON.parse(user.name)
+    if (logged && profile.name && profile.surname) {
+        userNames = `${(profile.name)} ${profile.surname}`
     }
 
-    console.log(user)
+    useNuxtApp().hooks.hook('app:mounted', async () => {
+        const { $auth } = useNuxtApp()
+        await $auth.currentUser?.reload()
+        console.log("FIREBASE USER HAS BEEN RELOADED")
+
+        console.log($auth.currentUser)
+        if ($auth.currentUser) {
+            console.log("FIREBASE AUTH STORE UPDATED")
+            const currentUser = $auth.currentUser
+            useAuthStore().updateUser(currentUser.email!, currentUser.emailVerified, currentUser.displayName!, currentUser.photoURL!, currentUser.uid, true)
+        }
+    })
 </script>
 
 <template>
     <div class="navbar bg-primary h-[60px] pt-[10px] pb-[10px] pr-[8px] pl-[8px] min-h-[60px]">
-        <div class="navbar-start">
-            <img src="/images/DogsHomeLogo-ReDesign (White&Final).png" class="w-[40px] h-[40px]" alt="">
+        <div class="md:navbar-start">
+            <img src="/images/DogsHomeLogo-ReDesign (White&Final).png" class="w-0 md:w-[40px] md:h-[40px]" alt="">
             <a href="" class="link-neutral"></a>
         </div>
-        <div class="navbar-center h-full">
-            <div class="flex p-0 m-0 h-full w-[100vw] max-w-[400px] rounded-[2px] bg-neutral ">
+        <div class="navbar-start w-full md:w-auto md:navbar-center h-full ml-[8px] mr-[8px]">
+            <div class="flex p-0 m-0 h-full w-full md:w-[100vw] md:max-w-[400px] rounded-[2px] bg-neutral ">
                 <div class="flex justify-center items-center w-[44px] group cursor-pointer">
                     <Icon color="#d3d3d3" name="ic:outline-tune" class="w-[24px] h-[24px] transition ease-out group-hover:!text-primary transition ease-in"></Icon>
                 </div>
@@ -33,20 +47,20 @@
                 </div>
             </div>
         </div>
-        <div class="navbar-end">
-            <div tabindex="0" role="button" class="avatar dropdown w-fit justify-end flex flex-row items-center pl-[10px]" v-if="logged" @focusout="menuVisible = !menuVisible" @focusin="menuVisible = !menuVisible">
+        <div class="navbar-end w-fit md:w-[50%]">
+            <div tabindex="0" role="button" class="avatar dropdown w-fit justify-end flex flex-row items-center md:pl-[10px]" v-if="logged" @focusout="menuVisible = !menuVisible" @focusin="menuVisible = !menuVisible">
                 <Icon color="#d3d3d3" name="ic:round-keyboard-arrow-down" class="w-[24px] h-[24px] transition-transform" :class="{ 'rotate-[-180deg]': menuVisible}"></Icon>
 
-                <a class="flex max-h-[40px] justify-center items-center m-0 ml-[10px]">
-                    <h1 class="text-white text-center font-bold"> {{ userNames != null ? userNames.nameAndSurname.displayName : "No Username"}}</h1>
+                <a class="invisible w-0 m-0 flex md:w-auto md:visible max-h-[40px] justify-center items-center md:ml-[10px]">
+                    <h1 class="invisible text-ellipsis whitespace-nowrap overflow-hidden max-w-[200px] md:visible md:text-white md:text-center md:font-bold md:capitalize"> {{ userNames != null ? userNames : "No Username"}}</h1>
                 </a>
 
                 <div class="w-[40px] h-[40px] rounded-full ml-[10px]">
                     <img id="user-profile-picture" class="cursor-pointer" src="/images/default-user-image.png" alt="Default user profile picture" v-if="user.picture == null || user.picture == '' || user.picture == undefined">
-                    <img id="user-profile-picture" class="cursor-pointer" :src="user.picture" alt="User profile picture" onerror="this.onerror=null; this.src='/images/default-user-image.png'" v-else>
+                    <img id="user-profile-picture" class="cursor-pointer" :src="profile.photo_url" alt="User profile picture" onerror="this.onerror=null; this.src='/images/default-user-image.png'" v-else>
                 </div>
 
-                <NavDropdown />
+                <NavDropdown :selected-field-index="selectedDropdownField"/>
             </div>
             <div class="avatar" v-else>
                 <div class="w-[40px] h-[40px] rounded-full">
@@ -75,6 +89,9 @@
             userAccountType: {
                 type: String,
             },
+            selectedDropdownField: {
+                type: String
+            }
         }
     }
 </script>

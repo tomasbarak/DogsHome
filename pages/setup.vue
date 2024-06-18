@@ -1,8 +1,18 @@
 <script setup lang="ts">
+    const { logoutUser } = useFirebaseAuth()
+
     const creationState: Ref<number> = useState('creationInstance')
     const loadingState: Ref<boolean> = useState('loadingInstance', () => false)
 
     // creationState.value = 9
+
+    function handle_logout() {
+        logoutUser()
+        window.location.href = '/auth'
+        // Delete the cookies named session and auth
+        document.cookie = "session=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+        document.cookie = "auth=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+    }
 </script>
 
 <style scoped>

@@ -1,8 +1,6 @@
 import { signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut } from "firebase/auth";
 import type { User } from "firebase/auth";
 import { useAuthStore } from '@/stores/authStore'
-import { RefSymbol } from "@vue/reactivity";
-import Cookies from 'js-cookie';
 
 export default function() {
     const { $auth } = useNuxtApp();
@@ -11,11 +9,11 @@ export default function() {
     const config = useRuntimeConfig()
 
     useNuxtApp().hooks.hook('app:mounted', () => {
-        $auth.onAuthStateChanged((user) => {
+        $auth.onAuthStateChanged((user: any) => {
             console.log("Auth State Changed")
 
             if (user) {
-                authStore.updateUser(user.email!, user.emailVerified, user.displayName!, user.photoURL!, user.uid, true)
+                authStore.updateUser(user.email, user.emailVerified, user.displayName, user.photoURL, user.uid, true)
                 useState("fb_user", () => user);
             } else {
                 authStore.$reset();

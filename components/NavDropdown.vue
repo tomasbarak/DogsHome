@@ -1,15 +1,15 @@
 <script setup lang="ts">
     import { useAuthStore } from '@/stores/authStore'
-    const { logoutUser } = useFirebaseAuth()
     import { ref } from 'vue'
+    const { logoutUser } = useFirebaseAuth()
 
     const user = toRaw(useAuthStore().user)
     const profile: any = toRaw(useState('userProfile').value)
     const logged: boolean = user.logged
 
     let userNames: any = null
-    if (logged && user.name) {
-        userNames = JSON.parse(user.name)
+    if (logged && profile.name && profile.surname) {
+        userNames = `${(profile.name)} ${profile.surname}`
     }
 
     function handle_logout() {
@@ -21,13 +21,21 @@
     }
 </script>
 
+<style scoped>
+    .selected > a {
+        background-color: #f5f5f5;
+        color: #079292;
+        font-weight: bolder
+    }
+</style>
+
 <template>
     <ul class="menu bg-white rounded-[2px] shadow dropdown-content z-[1] top-[45px] min-w-[200px]">
-        <li class="menu-title pb-0">Hola, {{ userNames != null ? userNames.nameAndSurname.displayName : "No Username" }}</li>
-        <li class="menu-title pt-0 text-black/[.22]">{{ user.email }}</li>
-        <li>
-            <a :href="`/perfil/${user.uid}`" class="text-[#222] table-cell align-middle">
-                <Icon color="#d3d3d3" name="ic:round-person" class="w-[24px] h-[24px] mr-[16px]"></Icon>
+        <li class="menu-title pb-0 capitalize">Hola, {{ userNames != null ? userNames : "No Username" }}</li>
+        <li class="menu-title pt-0 text-black/[.22]">{{ profile.email }}</li>
+        <li :class="{'selected': Number(selectedFieldIndex) == 0}">
+            <a :href="`/perfil`" class="text-[#222] table-cell align-middle">
+                <Icon :color="Number(selectedFieldIndex) != 0 ? '#d3d3d3' : '#079292'" name="ic:round-person" class="w-[24px] h-[24px] mr-[16px]"></Icon>
                 Perfil
             </a>
         </li>
@@ -73,3 +81,13 @@
         </li>
     </ul>
 </template>
+
+<script lang="ts">
+    export default {
+        props: {
+            selectedFieldIndex: {
+                type: String
+            }
+        }
+    }
+</script>

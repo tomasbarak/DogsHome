@@ -14,9 +14,12 @@
 
     const sessionCookie = useCookie('session')
 
-    useNuxtApp().hooks.hook('app:created', async () => {
+    useNuxtApp().hooks.hook('app:mounted', async () => {
         const { $auth } = useNuxtApp()
         $auth.currentUser?.reload()
+        console.log("FIREBASE USER HAS BEEN RELOADED 01")
+
+        console.log($auth.currentUser)
 
         if ($auth.currentUser) {
             const currentUser = $auth.currentUser
