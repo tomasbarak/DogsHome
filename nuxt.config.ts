@@ -72,6 +72,11 @@ export default defineNuxtConfig({
           name: 'publicacion-id',
           path: '/publicacion/:id',
           file: '~/pages/publication/[id].vue'
+        },
+        {
+          name: 'editar-perfil',
+          path: '/editar/perfil',
+          file: '~/pages/edit/profile.vue'
         }
       ]);
     }

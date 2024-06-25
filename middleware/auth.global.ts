@@ -6,6 +6,11 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
         '/profile/image', '/profile/image/'
     ]
 
+    const protectedRoutes = [
+        '/perfil',
+        '/profile'
+    ]
+
     if(ignoreRoutes.includes(to.path)) return
     if(process.client) return
 
@@ -14,7 +19,12 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
     const runtimeConfig = useRuntimeConfig()
     const apiUrl = runtimeConfig.public.context == "dev" ? runtimeConfig.public.dev.apiUrl : runtimeConfig.public.prod.apiUrl
 
-    if(!sessionCookie.value) return;
+    if(!sessionCookie.value) {
+        if(protectedRoutes.includes(to.path)){
+            return navigateTo('/auth')
+        }
+        return
+    };
 
     let authRes = null
     let profileRes = null
