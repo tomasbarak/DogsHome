@@ -1,29 +1,36 @@
 <script setup lang="ts">
     import NormalInput from '@/components/ui/edit/profile/NormalInput.vue'
-    import { isEqual, cloneDeep } from 'lodash'
+    import isEqual from 'lodash/isEqual'
+    import cloneDeep from 'lodash/cloneDeep'
+
+    const config = useRuntimeConfig();
+    const { swalProfileCreationError } = useSwal()
+
+
+    const apiUrl = config.public.context === 'dev' ? config.public.dev.apiUrl : config.public.prod.apiUrl;
 
     const user = toRaw(useAuthStore().user)
-    // const profile: any = toRaw(useState('userProfile').value)
+    let profile: any = toRaw(useState('userProfile').value)
+    // let profile: any = {
+    //     "user_id": "lxfAgybtGDNpSINDa7b59uWJKmz2",
+    //     "email": "mascotasenadopcionargentina@gmail.com",
+    //     "creation_instance": 10,
+    //     "name": "Tomás",
+    //     "surname": "Barak",
+    //     "accountType": 2,
+    //     "shelter_name": "Mascotas en Adopcion Argentina",
+    //     "photo_url": "http://www.mascotasenadopcion.com/docs/logomascotasenadopcion180.jpg",
+    //     // "short_description": "Mascotas en adopción se formó inicialmente con el fin de poder rescatar, rehabilitar y luego dar en adopción aquellos perros.",
+    //     "website": "www.mascotasenadopcion.com/",
+    //     "social": {
+    //         "instagram": "mascotasenadopcionargentina",
+    //         "facebook": "mascotasenadopcionargentina",
+    //         "twitter": "mascotasenadopcionargentina"
+    //     },
+    //     "accepted_terms": true,
+    //     "is_verified_identity": true,
+    // }
 
-    const profile: any = {
-        "user_id": "lxfAgybtGDNpSINDa7b59uWJKmz2",
-        "email": "mascotasenadopcionargentina@gmail.com",
-        "creation_instance": 10,
-        "name": "Tomás",
-        "surname": "Barak",
-        "accountType": 2,
-        "shelter_name": "Mascotas en Adopcion Argentina",
-        "photo_url": "http://www.mascotasenadopcion.com/docs/logomascotasenadopcion180.jpg",
-        "short_description": "Mascotas en adopción se formó inicialmente con el fin de poder rescatar, rehabilitar y luego dar en adopción aquellos perros.",
-        "website": "www.mascotasenadopcion.com/",
-        "social": {
-            "instagram": "mascotasenadopcionargentina",
-            "facebook": "mascotasenadopcionargentina",
-            "twitter": "mascotasenadopcionargentina"
-        },
-        "accepted_terms": true,
-        "is_verified_identity": true,
-    }
 
     const editProfile = reactive(cloneDeep(profile))
 
@@ -74,6 +81,15 @@
             const currentUser = $auth.currentUser
             useAuthStore().updateUser(currentUser.email!, currentUser.emailVerified, currentUser.displayName!, currentUser.photoURL!, currentUser.uid, true)
         }
+
+        profile = cloneDeep(toRaw(editProfile))
+        hasDataChanged.value = !isEqual(toRaw(editProfile), profile)
+
+        window.onbeforeunload = function() {
+            if (hasDataChanged.value) {
+                return "¿Estás seguro que deseas salir? Los cambios que realizaste no se guardarán."
+            }
+        }
     })
 
     const goToEdit = () => {
@@ -117,7 +133,75 @@
     watch(editProfile, (newVal, oldVal) => {
         // Compare with profile
         hasDataChanged.value = !isEqual(toRaw(editProfile), profile)
+
+        console.log("HAS DATA CHANGED?")
+        console.log(toRaw(editProfile))
+        console.log(profile)
     }, {deep: true})
+
+    const readURL = () => {
+        const input = document.getElementById('upload-photo') as HTMLInputElement;
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+
+            reader.onload = function (e) {
+                editProfile.photo_b64 = e.target?.result as string;
+            };
+
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+
+    const handleServerError = (error: any) => {
+        console.error(error);
+        switch (error) {
+            case "FILE_TOO_BIG":
+                swalProfileCreationError('La imágen es demasiado grande. Por favor, seleccioná una imágen de menos de 5MB.');
+                break;
+            default:
+                swalProfileCreationError('Ocurrió un error inesperado. Por favor, intentá nuevamente.');
+                break;
+        }
+
+        // loadingState.value = false;
+    }
+
+    const uploadPhoto = async () => {
+        const formData = new FormData();
+        const fileInput = document.querySelector('#upload-photo') as HTMLInputElement;
+
+        if (fileInput.files?.length! > 0) {
+            //Check if file size is less than 5MB
+            if (fileInput.files![0].size > 1024 * 1024 * 5) {
+                handleServerError("FILE_TOO_BIG");
+                return false;
+            }
+            
+
+            formData.append("file", fileInput.files![0]);
+
+            const upload_response = await fetch(`${apiUrl}/user/profile/image`, {
+                method: 'POST',
+                // headers: {
+                //     'Content-Type': 'multipart/form-data'
+                // },
+                credentials: 'include',
+                body: formData
+            })
+
+            if (upload_response.ok) {
+                const response_json = await upload_response.json();
+                profile.photo_url = response_json.photo;
+                return true
+            }
+
+            const res_json = await upload_response.json()
+            handleServerError(res_json.err)
+
+            return false
+        }
+        
+    }
 
     const handleProfileUpdate = async () => {
         const changedFields = getChangedFields(profile, editProfile)
@@ -127,6 +211,25 @@
             console.log(changedFields)
 
             //TODO: IMPLEMENTAR ENVIO DE DATOS A BACKEND
+
+            if (editProfile.photo_b64) {
+                const uploadSuccessful = await uploadPhoto()
+                if (!uploadSuccessful) {
+                    return
+                }
+                console.log("UPLOAD SUCCESSFUL")
+                delete editProfile.photo_b64
+
+                const response = await fetch(`${apiUrl}/user/profile/update`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({"updates": editProfile}),
+                    credentials: 'include'
+                })
+            }
+
         } else {
             console.log("¿Que carajo hacés? Todavía no cambiaste nada... ¿Cómo llegaste hasta acá? Volá de acá")
         }
@@ -136,11 +239,13 @@
 <template>
     <NavBar selected-dropdown-field="0"/>
     <section class="flex relative bg-[#079292] w-full h-[200px]">
-        <div class="flex cursor-pointer bg-black relative w-[150px] h-[150px] rounded-full overflow-hidden left-[50%] translate-x-[-50%] bottom-[-100px] border-primary border-2 z-10 group">
-            <img class="group-hover:opacity-30 transition-opacity" id="user-profile-picture" src="/images/default-user-image.png" alt="Default user profile picture" v-if="profile.photo_url == null || profile.photo_url == '' || profile.photo_url == undefined">
-            <img class="group-hover:opacity-30 transition-opacity" id="user-profile-picture" :src="profile.photo_url" alt="User profile picture" onerror="this.onerror=null; this.src='/images/default-user-image.png'" v-else>
+        <label for="upload-photo" class="flex cursor-pointer bg-black relative w-[150px] h-[150px] rounded-full overflow-hidden left-[50%] translate-x-[-50%] bottom-[-100px] border-primary border-2 z-10 group">
+            <img v-if="editProfile.photo_b64" :src="editProfile.photo_b64" alt="Foto de perfil" class="w-full h-full object-cover rounded-full bg-cover" />
+            <img v-else-if="profile.photo_url == null || profile.photo_url == '' || profile.photo_url == undefined" class="group-hover:opacity-30 transition-opacity" id="user-profile-picture" src="/images/default-user-image.png" alt="Default user profile picture">
+            <img v-else class="group-hover:opacity-30 transition-opacity" id="user-profile-picture" :src="profile.photo_url" alt="User profile picture" onerror="this.onerror=null; this.src='/images/default-user-image.png'">
             <Icon name="ic:round-edit" color="#fff" class="opacity-0 z-20 w-[32px] h-[32px] absolute left-[50%] translate-x-[-50%] top-[50%] translate-y-[-50%] group-hover:opacity-100 transition-opacity"/>
-        </div>
+        </label>
+        <input class="hidden" type="file" accept=".png, .jpg, .jpeg" name="file" id="upload-photo" @change="readURL"/>
         <VerifiedMark v-if="profile.is_verified_identity" color="#079292" name="ic:round-verified" class="absolute left-[50%] translate-x-[calc(-50%+50px)] bottom-[-50px] z-20" />
     </section>
     <section class="pt-[70px] flex flex-col items-center relative w-full h-fit md:p-[150px] p-[32px] gap-y-[50px]">
