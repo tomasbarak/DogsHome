@@ -30,6 +30,6 @@
 </script>
 
 <template>
-    <NavBar />
+    <NavBar selected-dropdown-field="0"/>
     <!-- <h1>{{ logged && user.name ? `User is logged in as ${userNames.nameAndSurname.displayName} (${user.email})` : "User is anonymous" }}</h1> -->
 </template>

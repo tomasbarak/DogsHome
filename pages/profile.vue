@@ -76,9 +76,9 @@
 </script>
 
 <template>
-    <NavBar selected-dropdown-field="0"/>
+    <NavBar selected-dropdown-field="1"/>
     <section class="flex relative bg-[#079292] w-full h-[200px]">
-        <section class="absolute flex md:hidden flex-row justify-center w-full h-[100px] p-[16px] pt-0 box-border">
+        <!-- <section class="absolute flex md:hidden flex-row justify-center w-full h-[100px] p-[16px] pt-0 box-border">
             <div class="flex flex-row">
                 <div class="flex flex-col justify-center items-center mr-[0px] md:mr-[50px] w-[100px]">
                     <h1 class="text-3xl text-white font-extrabold">{{ kFormatter(stats.following) }}</h1>
@@ -93,10 +93,10 @@
                     <h3 class="text-white">Publicaciones</h3>
                 </div>
             </div>
-        </section>
+        </section> -->
         <div class="flex absolute w-[150px] h-[150px] rounded-full overflow-hidden left-[50%] translate-x-[-50%] bottom-[-50px] border-primary border-2 z-10">
-            <img id="user-profile-picture" src="/images/default-user-image.png" alt="Default user profile picture" v-if="profile.photo_url == null || profile.photo_url == '' || profile.photo_url == undefined">
-            <img id="user-profile-picture" :src="profile.photo_url" alt="User profile picture" onerror="this.onerror=null; this.src='/images/default-user-image.png'" v-else>
+            <ImageSkeleton id="user-profile-picture" source="/images/default-user-image.png" alt="Default user profile picture" v-if="profile.photo_url == null || profile.photo_url == '' || profile.photo_url == undefined" />
+            <ImageSkeleton id="user-profile-picture" errorSrc="/images/default-user-image.png" :source="profile.photo_url" alt="User profile picture" onerror="this.onerror=null; this.src='/images/default-user-image.png'" v-else />
         </div>
         <VerifiedMark v-if="profile.is_verified_identity" color="#079292" name="ic:round-verified" class="absolute left-[50%] translate-x-[calc(-50%+50px)] bottom-[-50px] z-20" />
     </section>
@@ -105,7 +105,7 @@
             <!-- <button class="h-[50px] w-[100px] bg-white text-[#333] border-2 border-primary p-0 m-0 rounded-[4px] transition-colors hover:bg-primary hover:text-white">Contactar</button> -->
         </div>
         <div class="relative flex flex-row justify-center w-[50%] pl-[75px]">
-            <section class="absolute hidden md:flex flex-row justify-center w-auto h-[100px] p-[16px] pt-0 top-[-100px]">
+            <!-- <section class="absolute hidden md:flex flex-row justify-center w-auto h-[100px] p-[16px] pt-0 top-[-100px]">
                 <div class="flex flex-row">
                     <div v-if="stats.following != undefined" class="flex flex-col justify-center items-center mr-[25px] md:mr-[0px] w-[100px]">
                         <h1 class="text-3xl text-white font-extrabold">{{ kFormatter(stats.following) }}</h1>
@@ -120,7 +120,7 @@
                         <h3 class="text-white">Publicaciones</h3>
                     </div>
                 </div>
-            </section>
+            </section> -->
             <!-- <button class="h-[50px] w-[100px] bg-primary text-white p-0 m-0 rounded-[4px]">Seguir</button> -->
             <button @click="goToEdit" class="hidden md:flex flex-row font-semibold justify-center items-center p-[8px] h-[50px] w-fit bg-primary text-white border-2 border-primary m-0 rounded-[4px] group">
                 Editar perfil
@@ -131,7 +131,7 @@
         </div>
     </section>
     <section class="pt-[70px] md:pt-0 flex flex-col items-center relative w-full h-fit p-[16px]">
-        <button class="flex md:hidden mb-[16px] flex-row font-semibold justify-center items-center p-[8px] h-[50px] w-fit bg-primary text-white border-2 border-primary m-0 rounded-[4px] group">
+        <button @click="goToEdit" class="flex md:hidden mb-[16px] flex-row font-semibold justify-center items-center p-[8px] h-[50px] w-fit bg-primary text-white border-2 border-primary m-0 rounded-[4px] group">
                 Editar perfil
 
                 <div class="divider divider-horizontal mr-0 ml-0"></div>

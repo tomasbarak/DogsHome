@@ -30,12 +30,19 @@
 </style>
 
 <template>
-    <ul class="menu bg-white rounded-[2px] shadow dropdown-content z-[1] top-[45px] min-w-[200px]">
+    <ul class="menu bg-white rounded-[2px] shadow dropdown-content top-[45px] min-w-[200px]">
         <li class="menu-title pb-0 capitalize">Hola, {{ userNames != null ? userNames : "No Username" }}</li>
         <li class="menu-title pt-0 text-black/[.22]">{{ profile.email }}</li>
         <li :class="{'selected': Number(selectedFieldIndex) == 0}">
+            <a :href="`/inicio`" class="text-[#222] table-cell align-middle">
+                <Icon :color="Number(selectedFieldIndex) != 0 ? '#d3d3d3' : '#079292'" name="ic:round-home" class="w-[24px] h-[24px] mr-[16px]"></Icon>
+                Inicio
+            </a>
+        </li>
+        <div class="divider my-[1px] cursor-default"></div>
+        <li :class="{'selected': Number(selectedFieldIndex) == 1}">
             <a :href="`/perfil`" class="text-[#222] table-cell align-middle">
-                <Icon :color="Number(selectedFieldIndex) != 0 ? '#d3d3d3' : '#079292'" name="ic:round-person" class="w-[24px] h-[24px] mr-[16px]"></Icon>
+                <Icon :color="Number(selectedFieldIndex) != 1 ? '#d3d3d3' : '#079292'" name="ic:round-person" class="w-[24px] h-[24px] mr-[16px]"></Icon>
                 Perfil
             </a>
         </li>

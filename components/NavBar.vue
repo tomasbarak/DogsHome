@@ -56,11 +56,11 @@
                 </a>
 
                 <div class="w-[40px] h-[40px] rounded-full ml-[10px]">
-                    <img id="user-profile-picture" class="cursor-pointer" src="/images/default-user-image.png" alt="Default user profile picture" v-if="user.picture == null || user.picture == '' || user.picture == undefined">
-                    <img id="user-profile-picture" class="cursor-pointer" :src="profile.photo_url" alt="User profile picture" onerror="this.onerror=null; this.src='/images/default-user-image.png'" v-else>
+                    <ImageSkeleton id="user-profile-picture" class="cursor-pointer" source="/images/default-user-image.png" alt="Default user profile picture" v-if="user.picture == null || user.picture == '' || user.picture == undefined" />
+                    <ImageSkeleton id="user-profile-picture" class="cursor-pointer" errorSrc="/images/default-user-image.png" :source="profile.photo_url" alt="User profile picture" onerror="this.onerror=null; this.src='/images/default-user-image.png'" v-else />
                 </div>
 
-                <NavDropdown :selected-field-index="selectedDropdownField"/>
+                <NavDropdown :selected-field-index="selectedDropdownField" class="z-[100]"/>
             </div>
             <div class="avatar" v-else>
                 <div class="w-[40px] h-[40px] rounded-full">

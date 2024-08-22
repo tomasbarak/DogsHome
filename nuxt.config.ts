@@ -49,6 +49,11 @@ export default defineNuxtConfig({
           file: '~/pages/home.vue'
         },
         {
+          name: 'inicio',
+          path: '/inicio',
+          file: '~/pages/home.vue'
+        },
+        {
           name: 'favoritos',
           path: '/perfil/lista/favoritos',
           file: '~/pages/profile/list/favorites.vue'

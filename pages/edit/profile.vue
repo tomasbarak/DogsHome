@@ -31,6 +31,7 @@
     //     "is_verified_identity": true,
     // }
 
+    const loadingState: Ref<boolean> = useState('loadingInstance', () => false);
 
     const editProfile = reactive(cloneDeep(profile))
 
@@ -152,6 +153,34 @@
         }
     }
 
+    const securityChecks = () => {
+        const profileToCehck = toRaw(editProfile)
+        if (profileToCehck.name != undefined && profileToCehck.name.length < 2) {
+            return {secure: false, message: 'El nombre es demasiado corto.'};
+        }
+        
+        if (profileToCehck.name != undefined && profileToCehck.name.length > 50) {
+            return {secure: false, message: 'El nombre es demasiado largo.'};
+        }
+
+        if (profileToCehck.surname != undefined && profileToCehck.surname.length < 2) {
+            return {secure: false, message: 'El apellido es demasiado corto.'};
+        }
+        if (profileToCehck.surname != undefined && profileToCehck.surname.length > 50) {
+            return {secure: false, message: 'El apellido es demasiado largo.'};
+        }
+
+        if (profileToCehck.shelter_name != undefined && profileToCehck.shelter_name.length < 2) {
+            return {secure: false, message: 'El nombre del refugio es demasiado corto.'};
+        }
+
+        if (profileToCehck.short_description != undefined && profileToCehck.short_description.length > 140) {
+            return {secure: false, message: 'La descripción corta es demasiado larga.'};
+        }
+
+        return {secure: true, message: ''};
+    }
+
     const handleServerError = (error: any) => {
         console.error(error);
         switch (error) {
@@ -163,7 +192,13 @@
                 break;
         }
 
-        // loadingState.value = false;
+        loadingState.value = false;
+    }
+
+    const handleSuccessfullUpdate = () => {
+        loadingState.value = false;
+        profile = cloneDeep(toRaw(editProfile))
+        hasDataChanged.value = !isEqual(toRaw(editProfile), profile)
     }
 
     const uploadPhoto = async () => {
@@ -203,14 +238,41 @@
         
     }
 
+    const deletePhoto = async () => {
+        const delete_response = await fetch(`${apiUrl}/user/profile/image`, {
+            method: 'DELETE',
+            credentials: 'include'
+        })
+
+        if (delete_response.ok) {
+            profile.photo_url = ''
+            return true
+        }
+
+        const res_json = await delete_response.json()
+        handleServerError(res_json.err)
+
+        return false
+    }
+
     const handleProfileUpdate = async () => {
         const changedFields = getChangedFields(profile, editProfile)
+
+        loadingState.value = true;
         
         if (Object.keys(changedFields).length > 0) {
             console.log("CHANGED FIELDS")
             console.log(changedFields)
 
             //TODO: IMPLEMENTAR ENVIO DE DATOS A BACKEND
+
+            const security = securityChecks()
+
+            if (!security.secure) {
+                swalProfileCreationError(security.message);
+                loadingState.value = false;
+                return
+            }
 
             if (editProfile.photo_b64) {
                 const uploadSuccessful = await uploadPhoto()
@@ -219,34 +281,96 @@
                 }
                 console.log("UPLOAD SUCCESSFUL")
                 delete editProfile.photo_b64
-
-                const response = await fetch(`${apiUrl}/user/profile/update`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({"updates": editProfile}),
-                    credentials: 'include'
-                })
             }
 
+            if (editProfile.photo_b64 == '') {
+                const deleteSuccessful = await deletePhoto()
+                if (!deleteSuccessful) {
+                    return
+                }
+            }
+
+            const response = await fetch(`${apiUrl}/user/profile/update`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ "updates": editProfile }),
+                credentials: 'include'
+            })
+
+            if (response.ok) {
+                handleSuccessfullUpdate()
+                return
+            }
+
+            const res_json = await response.json()
+            handleServerError(res_json)
+            return
         } else {
             console.log("¿Que carajo hacés? Todavía no cambiaste nada... ¿Cómo llegaste hasta acá? Volá de acá")
         }
+    }
+
+    const modal = ref<HTMLDialogElement | null>(null)
+
+    const deleteProfilePicture = () => {
+        editProfile.photo_b64 = ''
+        editProfile.photo_url = ''
+        profile.photo_url = ''
+    }
+    
+    const dialogDeleteImage = () => {
+        deleteProfilePicture()
+        modal.value?.close()
+    }
+
+    const dialogChangeImage = () => {
+        const input = document.getElementById('upload-photo') as HTMLInputElement;
+        input.click()
+        modal.value?.close()
     }
 </script>
 
 <template>
     <NavBar selected-dropdown-field="0"/>
-    <section class="flex relative bg-[#079292] w-full h-[200px]">
-        <label for="upload-photo" class="flex cursor-pointer bg-black relative w-[150px] h-[150px] rounded-full overflow-hidden left-[50%] translate-x-[-50%] bottom-[-100px] border-primary border-2 z-10 group">
-            <img v-if="editProfile.photo_b64" :src="editProfile.photo_b64" alt="Foto de perfil" class="w-full h-full object-cover rounded-full bg-cover" />
-            <img v-else-if="profile.photo_url == null || profile.photo_url == '' || profile.photo_url == undefined" class="group-hover:opacity-30 transition-opacity" id="user-profile-picture" src="/images/default-user-image.png" alt="Default user profile picture">
-            <img v-else class="group-hover:opacity-30 transition-opacity" id="user-profile-picture" :src="profile.photo_url" alt="User profile picture" onerror="this.onerror=null; this.src='/images/default-user-image.png'">
-            <Icon name="ic:round-edit" color="#fff" class="opacity-0 z-20 w-[32px] h-[32px] absolute left-[50%] translate-x-[-50%] top-[50%] translate-y-[-50%] group-hover:opacity-100 transition-opacity"/>
-        </label>
+    <section class="z-1 flex relative bg-[#079292] w-full h-[200px]">
+        <div class="flex bg-[#333] relative w-[150px] h-[150px] rounded-full overflow-hidden left-[50%] translate-x-[-50%] bottom-[-100px] border-primary border-2 z-10 group">
+            <ImageSkeleton v-if="editProfile.photo_b64" :source="editProfile.photo_b64" alt="Foto de perfil" class="group-hover:opacity-10 transition-opacity w-full h-full object-cover rounded-full bg-cover" />
+            <ImageSkeleton v-else-if="profile.photo_url == null || profile.photo_url == '' || profile.photo_url == undefined" class="group-hover:opacity-30 transition-opacity" id="user-profile-picture" source="/images/default-user-image.png" alt="Default user profile picture" />
+            <ImageSkeleton v-else class="group-hover:opacity-10 transition-opacity" id="user-profile-picture" :source="profile.photo_url" alt="User profile picture" errorSrc="/images/default-user-image.png" />
+            <div class="absolute flex flex-row w-full h-full opacity-0 z-20 left-[50%] translate-x-[-50%] top-[50%] translate-y-[-50%] group-hover:opacity-100 transition-opacity">
+                <label for="upload-photo" class="hidden md:flex cursor-pointer grow justify-center items-center hover:bg-[rgba(255,255,255,0.15)] transition-colors">
+                    <Icon name="ic:round-edit" color="#fff" class="w-[32px] h-[32px]"/>
+                </label>
+                <div @click="deleteProfilePicture" class="hidden md:flex cursor-pointer grow justify-center items-center hover:bg-[rgba(255,50,50,0.15)] transition-colors">
+                    <Icon name="ic:round-delete" color="#fff" class="w-[32px] h-[32px]"/>
+                </div>
+                <div class="flex w-full h-full md:hidden cursor-pointer grpw justify-center items-center" onclick="change_image_modal.showModal()">
+
+                </div>
+            </div>
+        </div>
         <input class="hidden" type="file" accept=".png, .jpg, .jpeg" name="file" id="upload-photo" @change="readURL"/>
         <VerifiedMark v-if="profile.is_verified_identity" color="#079292" name="ic:round-verified" class="absolute left-[50%] translate-x-[calc(-50%+50px)] bottom-[-50px] z-20" />
+        <!-- <ul class="absolute bottom-[-100px] menu bg-white w-56 shadow-md rounded-[5px]">
+            <li><a class="flex"><font class="flex flex-row grow">Editar</font> <Icon color="#d3d3d3" name="ic:round-edit" class="w-[24px] h-[24px]"></Icon></a></li>
+            <li><a class="flex"><font class="flex flex-row grow">Eliminar</font> <Icon color="rgba(255,50,50,0.6)" name="ic:round-delete" class="w-[24px] h-[24px]"></Icon></a></li>
+        </ul> -->
+        <dialog ref="modal"id="change_image_modal" class="modal">
+            <div class="modal-box rounded-md">
+                <p class="py-4">¿Que vas a hacer con tu foto de perfil?</p>
+                <div class="modal-action">
+                <form method="dialog" class="flex grow gap-2">
+                    <!-- if there is a button in form, it will close the modal -->
+                    <button class="btn rounded-md">Cancelar</button>
+                    <div class="flex flex-row grow"></div>
+                    <a @click="dialogDeleteImage" class="btn rounded-md bg-error text-white">Borrar</a>
+                    <a @click="dialogChangeImage" class="btn rounded-md bg-primary text-white">Cambiar</a>
+                </form>
+                </div>
+            </div>
+        </dialog>
     </section>
     <section class="pt-[70px] flex flex-col items-center relative w-full h-fit md:p-[150px] p-[32px] gap-y-[50px]">
         <div class="w-full">
@@ -308,5 +432,8 @@
             </div>
         </div>
     </section>
-    <button :disabled="!toRaw(hasDataChanged)" @click="handleProfileUpdate" :class="{'bg-primary': toRaw(hasDataChanged), 'bg-[#d3d3d3]': !toRaw(hasDataChanged)}" class="fixed bottom-[15px] right-[15px] h-[50px] w-[100px] text-white p-0 m-0 rounded-[4px] transition-colors">Guardar</button>
+    <button :disabled="!toRaw(hasDataChanged)" @click="handleProfileUpdate" :class="{'bg-primary': toRaw(hasDataChanged), 'bg-[#d3d3d3]': !toRaw(hasDataChanged)}" class="fixed bottom-[15px] right-[15px] h-[50px] w-[100px] text-white p-0 m-0 rounded-[4px] transition-colors">
+        <span v-if="loadingState" class="relative loading loading-spinner loading-md"></span>
+        <font v-else>Guardar</font>
+    </button>
 </template>
