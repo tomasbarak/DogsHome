@@ -50,13 +50,15 @@
     const loading = ref(true)
     const reachedEnd = ref(false)
 
-    onMounted(async () => {
+    onNuxtReady(async () => {
         await getAndAddPublications(page.value)
         page.value += 1
+    })
 
-        window.addEventListener('scroll', () => {
+    onMounted(() => {
+        window.addEventListener('scroll', async () => {
             if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight - 660 && !loading.value && !reachedEnd.value) {
-                getAndAddPublications(page.value)
+                await getAndAddPublications(page.value)
                 page.value += 1
             }
         })

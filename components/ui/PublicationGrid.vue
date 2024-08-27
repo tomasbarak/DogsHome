@@ -17,7 +17,10 @@
     // Use the interface in the defineProps call
     const props = defineProps<{
         publications: Publication[];
-        loading: boolean;
+        loading: {
+            type: Boolean;
+            default: true;
+        };
     }>();
 
     // Create a reactive copy of props.publications
