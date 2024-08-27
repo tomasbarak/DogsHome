@@ -1,4 +1,7 @@
 <script setup lang="ts">
+    import LoadingAnimation from '@/components/ui/animations/LoadingAnimation.vue';
+    import AuthInput from '@/components/ui/auth/AuthInput.vue';
+
     const { user, loginUser } = useFirebaseAuth()
     const { swalAuthError } = useSwal() 
     const config = useRuntimeConfig()

@@ -7,6 +7,12 @@ export default {
         extend: {
             fontFamily: {
                 sans: ['Lato', ...defaultTheme.fontFamily.sans],
+            },
+            screens: {
+                'xs': '390px',
+                'mxs': {'max': '390px'},
+                'msm': {'max': '640px'},
+                'mmd': {'max': '768px'}
             }
         }
     },

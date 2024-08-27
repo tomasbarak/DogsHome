@@ -1,4 +1,7 @@
 <script setup lang="ts">
+    import EyeClosedIcon from '@/components/ui/icons/EyeClosedIcon.vue';
+    import EyeOpenIcon from '@/components/ui/icons/EyeOpenIcon.vue';
+
     const props = defineProps({
         modelValue: String,
         placeholder: String,

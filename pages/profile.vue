@@ -1,4 +1,9 @@
 <script setup lang="ts">
+    import SocialNetworkBtn from '@/components/ui/SocialNetworkBtn.vue';
+    import ImageSkeleton from '@/components/ui/ImageSkeleton.vue';
+    import VerifiedMark from '@/components/ui/icons/VerifiedMark.vue';
+    import NavBar from '@/components/ui/NavBar.vue'
+
     const user = toRaw(useAuthStore().user)
     const profile: any = toRaw(useState('userProfile').value)
 

@@ -1,4 +1,6 @@
 <script setup lang="ts">
+    import LongInput from '@/components/ui/inputs/LongInput.vue';
+
     const creationState: Ref<number> = useState('creationInstance');
     const profileState: Ref<any> = useState('userProfile');
     const loadingState: Ref<boolean> = useState('loadingInstance', () => false);

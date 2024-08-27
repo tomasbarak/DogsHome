@@ -1,7 +1,15 @@
 <script setup lang="ts">
-    import NormalInput from '@/components/ui/edit/profile/NormalInput.vue'
     import isEqual from 'lodash/isEqual'
     import cloneDeep from 'lodash/cloneDeep'
+
+    import WebsiteInput from '@/components/ui/inputs/WebsiteInput.vue';
+    import VerifiedMark from '@/components/ui/icons/VerifiedMark.vue';
+    import SocialInput from '@/components/ui/inputs/SocialInput.vue';
+    import NormalInput from '@/components/ui/inputs/NormalInput.vue'
+    import ImageSkeleton from '@/components/ui/ImageSkeleton.vue';
+    import LongInput from '@/components/ui/inputs/LongInput.vue';
+    import NavBar from '@/components/ui/NavBar.vue'
+
 
     const config = useRuntimeConfig();
     const { swalProfileCreationError } = useSwal()

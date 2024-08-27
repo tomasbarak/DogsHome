@@ -17,13 +17,15 @@
         if (img.value) {
             //set the source to source
             img.value.src = props.source!
-
-           
-
+            img.value.classList.add('hidden')
         }
     })
 
     const onImageLoaded = () => {
+        if (img.value) {
+            img.value.classList.remove('hidden')
+        }
+
         if (skeletonDiv.value) {
             skeletonDiv.value.classList.add('hidden')
         }
@@ -37,6 +39,7 @@
 
     watch(() => props.source, (newSource) => {
         if (img.value) {
+            img.value.classList.add('hidden')
 
             if (skeletonDiv.value) {
                 skeletonDiv.value.classList.remove('hidden')
@@ -51,8 +54,8 @@
 
 <template>
     <div class="w-full h-full">
-        <div ref="skeletonDiv" class="flex bg-[#d3d3d3] skeleton w-full h-full"></div>
-        <img ref="img" class="w-full h-full object-cover" :alt="alt" @load="onImageLoaded" @error="onImageError">
+        <div ref="skeletonDiv" class="flex bg-[#d3d3d3] skeleton w-full h-full rounded-none"></div>
+        <img ref="img" class="w-full h-full object-cover text-transparent" :alt="alt" @load="onImageLoaded" @error="onImageError">
     </div>
 </template>
 

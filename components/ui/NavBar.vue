@@ -1,4 +1,7 @@
 <script setup lang="ts">
+    import ImageSkeleton from '@/components/ui/ImageSkeleton.vue';
+    import NavDropdown from '@/components/ui/NavDropdown.vue';
+
     import { useAuthStore } from '@/stores/authStore'
     import { ref } from 'vue'
 
@@ -64,7 +67,7 @@
             </div>
             <div class="avatar" v-else>
                 <div class="w-[40px] h-[40px] rounded-full">
-                    <img id="user-profile-picture" class="cursor-pointer" src="/images/default-private-user-image.png" alt="Anonymous user profile picture" onclick="window.location = '/auth'">
+                    <ImageSkeleton id="user-profile-picture" class="cursor-pointer" source="/images/default-private-user-image.png" alt="Anonymous user profile picture" onclick="window.location = '/auth'" />
                 </div>
             </div>
 

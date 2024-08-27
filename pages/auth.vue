@@ -1,4 +1,7 @@
 <script setup lang="ts">
+    import LoginForm from '@/components/ui/auth/LoginForm.vue';
+    import RegisterForm from '@/components/ui/auth/RegisterForm.vue';
+
     const userZ = useState('user')
     const authMethod = useState('authMethod')
 

@@ -1,4 +1,6 @@
 <script setup lang="ts">
+    import AuthInput from '@/components/ui/auth/AuthInput.vue';
+    
     const creationState: Ref<number> = useState('creationInstance');
     const profileState: Ref<any> = useState('userProfile');
     const loadingState: Ref<boolean> = useState('loadingInstance', () => false);

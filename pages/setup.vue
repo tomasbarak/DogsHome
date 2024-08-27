@@ -1,4 +1,16 @@
 <script setup lang="ts">
+    import LoadingAnimation from '@/components/ui/animations/LoadingAnimation.vue';
+    import Step01 from '@/components/ui/profile/setup/Step01.vue';
+    import Step02 from '@/components/ui/profile/setup/Step02.vue';
+    import Step03 from '@/components/ui/profile/setup/Step03.vue';
+    import Step04 from '@/components/ui/profile/setup/Step04.vue';
+    import Step05 from '@/components/ui/profile/setup/Step05.vue';
+    import Step06 from '@/components/ui/profile/setup/Step06.vue';
+    import Step07 from '@/components/ui/profile/setup/Step07.vue';
+    import Step08 from '@/components/ui/profile/setup/Step08.vue';
+    import Step09 from '@/components/ui/profile/setup/Step09.vue';
+
+
     const { logoutUser } = useFirebaseAuth()
 
     const creationState: Ref<number> = useState('creationInstance')

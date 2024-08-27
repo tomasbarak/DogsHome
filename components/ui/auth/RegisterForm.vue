@@ -1,4 +1,9 @@
 <script setup lang="ts">
+    import LoadingAnimation from '@/components/ui/animations/LoadingAnimation.vue';
+    import PasswordInput from '@/components/ui/inputs/PasswordInput.vue';
+    import CheckIcon from '@/components/ui/icons/CheckIcon.vue';
+    import AuthInput from '@/components/ui/auth/AuthInput.vue';
+
     const { user, registerUser } = useFirebaseAuth()
     const { swalAuthError } = useSwal() 
     const { sendVerificationEmail } = useSendVerificationEmail()

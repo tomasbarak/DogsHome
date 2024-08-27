@@ -1,4 +1,6 @@
 <script setup lang="ts">
+    import SocialInput from '@/components/ui/inputs/SocialInput.vue';
+
     const creationState: Ref<number> = useState('creationInstance');
     const loadingState: Ref<boolean> = useState('loadingInstance', () => false);
     const config = useRuntimeConfig();
