@@ -341,7 +341,7 @@
 </script>
 
 <template>
-    <NavBar selected-dropdown-field="0"/>
+    <NavBar selected-dropdown-field="2"/>
     <section class="z-1 flex relative bg-[#079292] w-full h-[200px]">
         <div class="flex bg-[#333] relative w-[150px] h-[150px] rounded-full overflow-hidden left-[50%] translate-x-[-50%] bottom-[-100px] border-primary border-2 z-10 group">
             <ImageSkeleton v-if="editProfile.photo_b64" :source="editProfile.photo_b64" alt="Foto de perfil" class="group-hover:opacity-10 transition-opacity w-full h-full object-cover rounded-full bg-cover" />

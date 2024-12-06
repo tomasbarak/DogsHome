@@ -18,9 +18,13 @@
     const props = defineProps<{
         publications: Publication[];
         loading: {
-            type: Boolean;
+            type: boolean;
             default: true;
         };
+        isDraft: {
+            type: boolean;
+            default: false;
+        }
     }>();
 
     // Create a reactive copy of props.publications
@@ -35,14 +39,15 @@
 </script>
 
 <template>
-    <section class="w-full h-full flex justify-center flex-wrap gap-[15px] max-w-[1515px]">
-        <PublicationCard v-for="publication in reactivePublications"
+    <section class="w-full h-full flex justify-center flex-wrap gap-[50px] sm:gap-[15px]">
+        <PublicationCard :isDraft="isDraft" v-for="publication in reactivePublications"
             :key="publication.publication_id"
-            :image="publication.images[0]"
+            :image="publication.images && publication.images.length > 0 ? publication.images[0] : null"
             :title="publication.title"
             :description="publication.description"
             :shelterName="publication.publisher_name"
-            :province="publication.location.province_name" />
+            :province="publication.location ? publication.location.province_name : null"
+            :publicationId="publication.publication_id"/>
     </section>
     <LoadingAnimation :class="{'visible': loading, 'hidden': !loading}" />
 </template>

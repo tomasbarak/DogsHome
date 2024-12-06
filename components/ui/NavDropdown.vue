@@ -46,36 +46,36 @@
                 Perfil
             </a>
         </li>
-        <li>
-            <a :href="`/perfil/${user.uid}`" class="text-[#222] table-cell align-middle">
-                <Icon color="#d3d3d3" name="ic:round-library-books" class="w-[24px] h-[24px] mr-[16px]"></Icon>
+        <li :class="{'selected': Number(selectedFieldIndex) == 2}">
+            <a :href="`/editar/perfil`" class="text-[#222] table-cell align-middle">
+                <Icon :color="Number(selectedFieldIndex) != 2 ? '#d3d3d3' : '#079292'" name="ic:round-library-books" class="w-[24px] h-[24px] mr-[16px]"></Icon>
                 Mis Datos
             </a>
         </li>
         <div class="divider my-[1px] cursor-default"></div>
-        <li v-if="profile.accountType == 1 || profile.accountType == 2">
+        <li :class="{'selected': Number(selectedFieldIndex) == 3}" v-if="profile.accountType == 1 || profile.accountType == 2">
             <a :href="`/perfil/lista/borradores/`" class="text-[#222] table-cell align-middle">
-                <Icon color="#d3d3d3" name="ic:round-edit" class="w-[24px] h-[24px] mr-[16px]"></Icon>
+                <Icon :color="Number(selectedFieldIndex) != 3 ? '#d3d3d3' : '#079292'" name="ic:round-edit" class="w-[24px] h-[24px] mr-[16px]"></Icon>
                 Borradores
             </a>
         </li>
-        <li>
+        <li :class="{'selected': Number(selectedFieldIndex) == 4}">
             <a :href="`/perfil/lista/favoritos`" class="text-[#222] table-cell align-middle">
-                <Icon color="#d3d3d3" name="ic:round-favorite" class="w-[24px] h-[24px] mr-[16px]"></Icon>
+                <Icon :color="Number(selectedFieldIndex) != 4 ? '#d3d3d3' : '#079292'" name="ic:round-favorite" class="w-[24px] h-[24px] mr-[16px]"></Icon>
                 Favoritos
             </a>
         </li>
         <div class="divider my-[1px] cursor-default"></div>
-        <li>
+        <li :class="{'selected': Number(selectedFieldIndex) == 5}">
             <a :href="`/perfil/${user.uid}`" class="text-[#222] table-cell align-middle">
-                <Icon color="#d3d3d3" name="ic:round-chat-bubble" class="w-[24px] h-[24px] mr-[16px]"></Icon>
+                <Icon  :color="Number(selectedFieldIndex) != 5 ? '#d3d3d3' : '#079292'" name="ic:round-chat-bubble" class="w-[24px] h-[24px] mr-[16px]"></Icon>
                 Chats
             </a>
         </li>
         <div class="divider my-[1px] cursor-default"></div>
-        <li v-if="profile.accountType == 1 || profile.accountType == 2">
-            <a :href="`/perfil/${user.uid}`" class="text-[#222] table-cell align-middle">
-                <Icon color="#d3d3d3" name="ic:round-add-circle" class="w-[24px] h-[24px] mr-[16px]"></Icon>
+        <li :class="{'selected': Number(selectedFieldIndex) == 6}" v-if="profile.accountType == 1 || profile.accountType == 2">
+            <a :href="`/publicar`" class="text-[#222] table-cell align-middle">
+                <Icon :color="Number(selectedFieldIndex) != 6 ? '#d3d3d3' : '#079292'" name="ic:round-add-circle" class="w-[24px] h-[24px] mr-[16px]"></Icon>
                 Publicar
             </a>
         </li>

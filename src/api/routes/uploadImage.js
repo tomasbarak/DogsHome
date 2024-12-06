@@ -9,8 +9,6 @@ function init(app) {
         destination: 'uploads/profile/',
         //Set image file name as unique without original name
         filename: function (req, file, cb) {
-            var re = /(?:\.([^.]+))?$/;
-            let ext = re.exec(file.originalname)[1];
             cb(null, String(req.user_authenticated_id) + '.jpg');
         },
         limits: {
