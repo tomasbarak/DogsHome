@@ -3,12 +3,12 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "nuxt build",
-    "dev": "nuxt dev --https --ssl-cert ./certs/ssl/certificate.crt --ssl-key ./certs/ssl/private.key",
-    "generate": "nuxt generate",
-    "preview": "nuxt preview",
-    "preinstall": "npx only-allow pnpm",
-    "postinstall": "nuxt prepare",
+    "build": "pnpx nuxt build",
+    "dev": "pnpx nuxt dev --https --ssl-cert ./certs/ssl/certificate.crt --ssl-key ./certs/ssl/private.key",
+    "generate": "pnpx nuxt generate",
+    "preview": "pnpx nuxt preview",
+    "preinstall": "pnpx only-allow pnpm",
+    "postinstall": "pnpx nuxt prepare",
     "prod": "NITRO_PORT=8443 NITRO_SSL_CERT=`cat ./certs/ssl/certificate.crt` NITRO_SSL_KEY=`cat ./certs/ssl/private.key` node .output/server/index.mjs"
   },
   "devDependencies": {
