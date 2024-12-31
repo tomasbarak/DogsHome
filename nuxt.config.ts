@@ -82,6 +82,21 @@ export default defineNuxtConfig({
           name: 'editar-perfil',
           path: '/editar/perfil',
           file: '~/pages/edit/profile.vue'
+        },
+        {
+          name: 'editar-borrador',
+          path: '/editar/borrador/:id',
+          file: '~/pages/edit/draft/[id].vue'
+        },
+        {
+          name: 'publicar',
+          path: '/publicar',
+          file: '~/pages/publish.vue'
+        },
+        {
+          name: 'setup-borrador',
+          path: '/crear/borrador/:id',
+          file: '~/pages/create/draft/[id].vue'
         }
       ]);
     }

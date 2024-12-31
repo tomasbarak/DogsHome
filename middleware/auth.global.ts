@@ -8,7 +8,9 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
 
     const protectedRoutes = [
         '/perfil',
-        '/profile'
+        '/profile',
+        // '/editar',
+        // '/edit'
     ]
 
     if(ignoreRoutes.includes(to.path)) return
@@ -20,9 +22,11 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
     const apiUrl = runtimeConfig.public.context == "dev" ? runtimeConfig.public.dev.apiUrl : runtimeConfig.public.prod.apiUrl
 
     if(!sessionCookie.value) {
-        if(protectedRoutes.includes(to.path)){
-            return navigateTo('/auth')
+        const isProtected = protectedRoutes.some(route => to.path.includes(route))
+        if(isProtected){
+            // return navigateTo('/auth')
         }
+        console.log('no session cookie')
         return
     };
 
@@ -105,6 +109,12 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
         const user = useState('user');
         user.value = authData?.claim;
     } else {
+
+        // Check if to.path is inside of each route that requires authentication
+        // Example: /perfil/lista/borradores -> /perfil = true
+        
+
+
         const isAuth = useState('isAuth');
         isAuth.value = false;
         const user = useState('user');

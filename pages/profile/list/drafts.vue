@@ -2,49 +2,59 @@
     import PublicationGrid from '@/components/ui/PublicationGrid.vue';
     import NavBar from '@/components/ui/NavBar.vue';
 
-    const borradores = [
-        {
-            "description": "Juan es un perro mediano/chico y de color marrón. Se comporta bien y sabe hacer pis afuera. Es juguetón.",
-            "images": [
-                "https://www.pawschicago.org/fileadmin/media/images/adoption_section/Grubman_PAWS_4673_01.jpg"
-            ],
-            "publication_id": "19158d36-4387-4cec-9e45-c24fd3bc92cd",
-            "publisher_id": "lxfAgybtGDNpSINDa7b59uWJKmz2",
-            "publisher_name": "dogshome",
-            "title": "juan",
-            "draft_status": 7,
-            "location": {
-                "province": "02",
-                "province_name": "Ciudad Autónoma de Buenos Aires",
-                "locality": "0208401003",
-                "locality_name": "Villa Pueyrredón"
-            }
-        },
-        {
-            "description": "Juan es un perro mediano/chico y de color marrón. Se comporta bien y sabe hacer pis afuera. Es juguetón.",
-            "images": [
-                "https://www.pawschicago.org/fileadmin/media/images/adoption_section/Grubman_PAWS_4673_01.jpg"
-            ],
-            "publication_id": "19158d36-4387-4cec-9e45-c24fd3bc92cd",
-            "publisher_id": "lxfAgybtGDNpSINDa7b59uWJKmz2",
-            "publisher_name": "dogshome",
-            "title": "juan",
-            "draft_status": 7,
-            "location": {
-                "province": "02",
-                "province_name": "Ciudad Autónoma de Buenos Aires",
-                "locality": "0208401003",
-                "locality_name": "Villa Pueyrredón"
-            }
-        }
-    ]
+    const config = useRuntimeConfig()
+    const page = ref(1)
+ 
+    const getDrafts = async (page_number: number = 1) => {
+        const response = await fetch(`${config.public.context == 'dev' ? config.public.dev.apiUrl : config.public.prod.apiUrl}/drafts/page/${page_number}`, {
+            method: 'GET',
+            credentials: 'include',
+        })
 
+        const response_json = await response.json()
+
+        return response_json
+    }
+
+    const drafts = useState<any[]>('drafts', () => [])
+    const loading = ref(true)
+    const reachedEnd = ref(false)
+
+    onNuxtReady(async () => {
+        await getAndAddDrafts(page.value)
+        page.value += 1
+    })
+
+    onMounted(() => {
+        window.addEventListener('scroll', async () => {
+            if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight - 660 && !loading.value && !reachedEnd.value) {
+                await getAndAddDrafts(page.value)
+                page.value += 1
+            }
+        })
+    })
+
+    const getAndAddDrafts = async (page: number = 1) => {
+        loading.value = true
+        const newPublications = await getDrafts(page)
+        if (newPublications.length == 0) {
+            reachedEnd.value = true
+            loading.value = false
+            return
+        }
+        drafts.value = [...drafts.value, ...newPublications]
+        loading.value = false
+    }
+    
+    
 </script>
 
 <template>
-    <NavBar />
+    <NavBar  selected-dropdown-field="3"/>
     <section class="p-[32px]">
-        <h1 class="text-[#333] font-extrabold text-[48px]">Borradores pendientes</h1>
-        <PublicationGrid :publications="borradores" />
+        <h1 class="text-[#333] text-center font-extrabold text-[32px] md:text-[48px]">Borradores pendientes</h1>
+        <div class="box-border py-[32px]">
+            <PublicationGrid :is-draft="true" :publications="drafts" :loading="loading"/>
+        </div>
     </section>
 </template>

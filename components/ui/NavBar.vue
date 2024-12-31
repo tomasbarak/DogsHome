@@ -10,8 +10,6 @@
     const logged: boolean = user.logged
     const menuVisible = ref(false)
 
-    console.log("USER PROFILE", profile)
-
     let userNames: any = null
     if (logged && profile.name && profile.surname) {
         userNames = `${(profile.name)} ${profile.surname}`
@@ -34,8 +32,8 @@
 <template>
     <div class="navbar bg-primary h-[60px] pt-[10px] pb-[10px] pr-[8px] pl-[8px] min-h-[60px]">
         <div class="md:navbar-start">
-            <img src="/images/DogsHomeLogo-ReDesign (White&Final).png" class="w-0 md:w-[40px] md:h-[40px]" alt="">
-            <a href="" class="link-neutral"></a>
+            <img onclick="window.location.href = '/home'" src="/images/DogsHomeLogo-ReDesign (White&Final).png" class="w-[40px] min-w-[40px] h-[40px] cursor-pointer" alt="">
+            <a href="/home" class="hidden md:flex ml-4 text-white text-lg hover:scale-110 transition-transform">Inicio</a>
         </div>
         <div class="navbar-start w-full md:w-auto md:navbar-center h-full ml-[8px] mr-[8px]">
             <div class="flex p-0 m-0 h-full w-full md:w-[100vw] md:max-w-[400px] rounded-[2px] bg-neutral ">
