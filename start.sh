@@ -1,3 +1,3 @@
 #!/bin/bash
 cd $DOGSHOME_PLATFORM_PATH/dogshome
-npx pnpm run dev
+runuser -u $USER -- npx pnpm run dev
